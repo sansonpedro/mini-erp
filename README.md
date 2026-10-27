@@ -89,3 +89,4 @@ The app runs at `http://localhost:3000`.
 ## Author
 
 Built by Pedro, frontend and full stack developer from Santa Catarina, Brazil.
+# mini-erp
