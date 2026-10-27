@@ -10,11 +10,11 @@ chat) sem perder o que já foi decidido e sem refazer o que já está pronto.
 ## 0. Resumo em cinco linhas
 
 - Projeto: Mini ERP multi-tenant, portfólio, Next.js 16 + React 19 + Prisma 7 + Postgres.
-- Fase 0 (setup) commitada, enviada e **com CI verde** (`efbb7d1`, `origin/main`).
-- `lint`, `typecheck`, `test` e `build` passam também num clone limpo (simulei o CI localmente).
-- **Falta só o banco**: não há Docker nesta máquina, nenhum Postgres rodando, nenhuma migration.
-- Próximo passo real: apontar `DATABASE_URL` para um Postgres (Neon de preferência) e rodar a
-  primeira migration. Depois disso, Fase 1 (auth + empresa).
+- Fase 0 fechada, CI verde, e o Neon já provisionado (Postgres + Managed Better Auth).
+- Auth fiado no app: handler em `/api/auth/[...path]`, server/client em `src/lib/auth/`,
+  health check de banco em `/api/health`.
+- Fluxo validado por HTTP: sign-up, sign-in, get-session e sign-out.
+- Próximo passo: UI de login/signup, Company e proteção de rotas (Fase 1).
 
 ---
 
@@ -25,7 +25,7 @@ chat) sem perder o que já foi decidido e sem refazer o que já está pronto.
 | Pasta local | `C:\Users\sanso\Desktop\projetos\mini-erp` |
 | Repositório | https://github.com/sansonpedro/mini-erp |
 | Branch | `main` |
-| Último commit | `efbb7d1 fix(typecheck): generate route types before tsc on a clean checkout` |
+| Último commit | `e25ed71 feat(auth): wire Neon Auth and add database health check` |
 | Node local | v24.18.0 |
 | pnpm local | 11.15.1 (`packageManager` no package.json) |
 | CI | https://github.com/sansonpedro/mini-erp/actions — run #3 verde |
@@ -162,75 +162,70 @@ build — exatamente o que a Fase 1 faria. Desligados; motivo e plano de reavali
 
 ## 5. Próximos passos, na ordem
 
-### Passo 1 — Banco de dados (único bloqueio)
+### Passo 1 — Neon (concluído)
 
-Nada escutando em `localhost:5432`, `docker` não instalado, `prisma/migrations/` inexistente,
-nenhum seed. `src/lib/prisma.ts` nunca abriu conexão real.
+- Projeto `icy-firefly-66514481`, org `org-red-mud-47222893`, branch `production`
+  (`br-tiny-breeze-b6myuwd2`), região `sa-east-1`.
+- `neon.ts` declara `auth: true` (Postgres é implícito). `neon deploy` não teve mudanças porque
+  o Auth já estava habilitado no branch, e puxou as variáveis.
+- `.env` recebeu: `DATABASE_URL` (pooled, tráfego do app), `DATABASE_URL_UNPOOLED` (direto,
+  migrations), `NEON_BRANCH`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_JWKS_URL`.
+  `NEON_AUTH_COOKIE_SECRET` é segredo da aplicação, gerado localmente (32+ chars).
+- `prisma.config.ts` usa `DATABASE_URL_UNPOOLED` para migrations; o runtime usa `DATABASE_URL`.
+- Ainda **não há modelos nem migration**: a primeira migration nasce na Fase 1, com User/Company.
+- O warning do `pg` sobre `sslmode=require` é conhecido e não bloqueia (vira `verify-full` no
+  pg 9). Se incomodar, trocar para `sslmode=verify-full` na connection string.
 
-Opções:
+### Passo 2 — Fase 1: UI de auth + empresa
 
-1. **Neon (recomendado).** Grátis, é o alvo de deploy da Fase 6, não exige instalar nada.
-   Criar projeto em https://neon.tech, copiar a connection string (com `?sslmode=require`) para
-   `DATABASE_URL` no `.env`.
-2. **Docker Desktop.** Instalar (precisa de WSL2), `docker compose up -d`, usar a URL do
-   `.env.example`. Mais pesado e desnecessário para o projeto.
-3. **PostgreSQL nativo** via `winget install PostgreSQL.PostgreSQL.17` (pede admin). Só se quiser
-   tudo local.
-
-Depois de escolher:
-
-```bash
-pnpm prisma migrate dev --name init
-```
-
-Isso cria `prisma/migrations/` e aplica. Provar que conecta com `pnpm prisma studio` ou uma query
-simples. Só então seguir para a Fase 1.
-
-### Passo 2 — Fase 1: auth + empresa
-
+O backend de auth já está pronto e testado. Falta a camada de produto:
+telas de signup/login, onboarding da empresa, proteção de rotas e a migration de User/Company.
 Prompt pronto na seção 6. Definition of done na seção 7.
 
 ---
 
 ## 6. Prompt pronto para a Fase 1
 
-Colar no agente que for executar (depois do banco estar de pé):
+Colar no agente que for executar:
 
 ```text
-Fase 1 do Mini ERP: autenticação e empresa. Leia PLAN.md, README.md, AGENTS.md e
-docs/HANDOFF.md antes de qualquer coisa. Next.js 16.4.3 tem mudanças em relação ao que você
-conhece: leia os guias em node_modules/next/dist/docs/ (authentication.md,
-authentication-with-cache-components.md, 16-proxy.md) antes de escrever código. Em Next 16 o
-middleware se chama proxy.ts.
+Fase 1 do Mini ERP: telas de auth, empresa e proteção de rotas. Leia PLAN.md, README.md,
+AGENTS.md e docs/HANDOFF.md antes de qualquer coisa. Next.js 16.4.3 tem mudanças em relação ao
+que você conhece: leia os guias em node_modules/next/dist/docs/ (authentication.md,
+16-proxy.md) antes de escrever código. Em Next 16 o middleware se chama proxy.ts.
 
-Contexto já pronto: Prisma 7.10.1 com prisma.config.ts, generator "prisma-client" em
-src/generated/prisma, client singleton em src/lib/prisma.ts usando @prisma/adapter-pg,
-Postgres rodando e migration inicial aplicada. Estrutura por feature já existe em src/features.
-cacheComponents está desligado de propósito (docs/decisions/0001-cache-components.md).
+Contexto já pronto e NÃO refazer:
+- Neon Auth (Managed Better Auth) já fiado:
+  src/lib/auth/server.ts (createNeonAuth), src/lib/auth/client.ts (createAuthClient),
+  src/app/api/auth/[...path]/route.ts (auth.handler()).
+- Fluxo já validado por HTTP: sign-up, sign-in, get-session, sign-out.
+- Variáveis no .env: DATABASE_URL, DATABASE_URL_UNPOOLED, NEON_AUTH_BASE_URL,
+  NEON_AUTH_COOKIE_SECRET. Não troque de provedor de auth nem instale better-auth puro.
+- Prisma 7.10.1 com prisma.config.ts, client em src/lib/prisma.ts (@prisma/adapter-pg),
+  estrutura por feature em src/features, cacheComponents desligado (docs/decisions/0001).
 
 Escopo desta fase (nada além disso):
-1. Better Auth com adapter Prisma, e-mail + senha. Modelos do Better Auth (user, session,
-   account, verification) em prisma/schema.prisma, seguindo a doc oficial da versão instalada.
-2. Relação User -> Company (um usuário pertence a uma empresa; companyId no User).
-   Company: id, name, createdAt.
-3. Sign up, login, logout funcionando de verdade (não só a tela).
-4. Criação da empresa no primeiro login: se o usuário não tem companyId, redirecionar para
-   /onboarding/company, criar a empresa e vincular. Server action com Zod.
-5. Proteção de rotas: proxy.ts para checar sessão nas rotas privadas (/app/**), e checagem
-   de sessão no servidor (não confiar só no proxy). Rotas públicas: /, /login, /signup.
-6. UI em inglês, Tailwind + shadcn já configurados, Phosphor Icons. Formulários com React Hook
-   Form + Zod (mesmo schema no cliente e no server action). Páginas em app/ finas, lógica em
-   features/auth e features/company.
-7. Migration nova (pnpm prisma migrate dev --name auth-and-company). Não editar migrations à mão.
-8. Teste Vitest para o schema Zod de signup e para a regra "usuário sem empresa vai para onboarding".
+1. Modelos Prisma: Company (id, name, createdAt) e UserProfile/CompanyMember ligando o usuário
+   do Neon Auth (user.id é texto) a uma Company. Toda tabela de negócio leva companyId.
+   Migration: pnpm prisma migrate dev --name company.
+2. Telas /signup e /login em inglês, Tailwind + shadcn, Phosphor. Use authClient.signUp.email,
+   authClient.signIn.email e authClient.signOut. Mostre erro, loading e sucesso.
+3. Onboarding: usuário logado sem empresa vai para /onboarding/company, cria a empresa
+   (server action + Zod) e é vinculado. Depois vai para /app.
+4. proxy.ts com auth.middleware({ loginUrl: "/login" }) e matcher só nas rotas privadas
+   (/app/:path*). Mantenha /login, /signup, /api/auth e assets acessíveis.
+5. Checagem de sessão no servidor (auth.getSession()) em toda página/ação privada; não confie
+   só no proxy. Consultas sempre filtradas por companyId.
+6. Página /app mínima mostrando o nome da empresa e o usuário, provando o fluxo.
+7. Teste Vitest para o schema Zod de criação de empresa e para a regra "sem empresa -> onboarding".
    Playwright fica para a Fase 7.
 
 Regras: não adicionar biblioteca sem justificar; não usar floats para dinheiro; não colocar
-segredo no código; não commitar .env; não mexer em features de products/stock/sales; manter
-cacheComponents desligado.
+segredo no código; não commitar .env; não mexer em products/stock/sales; manter cacheComponents
+desligado.
 
-Ao terminar: rodar pnpm lint, pnpm typecheck, pnpm test e pnpm build; testar o fluxo completo no
-navegador (signup -> criar empresa -> logout -> login); e só então commitar com
+Ao terminar: rodar pnpm lint, pnpm typecheck, pnpm test e pnpm build; testar no navegador
+(signup -> onboarding -> /app -> logout -> login); e só então commitar com
 "feat(auth): signup, login and company onboarding". Relate o que passou, o que não passou e
 qualquer decisão que você tomou sozinho.
 ```
@@ -262,3 +257,54 @@ qualquer decisão que você tomou sozinho.
 - Modelo em uso nesta conversa: DeepSeek V4.1 Flash Free (OpenCode Zen). Alternativas gratuitas
   citadas: GLM-5.3-Flash Free; Nemotron 3 Ultra Free para tarefas pesadas. Evitar modelos "VL"
   (visão) para código. Limites de uso e de saída variam; conferir antes de tarefas longas.
+
+---
+
+## 9. Neon: infra, tooling e comandos
+
+### Recursos
+
+| Item | Valor |
+| --- | --- |
+| Org | `org-red-mud-47222893` |
+| Projeto | `icy-firefly-66514481` |
+| Branch | `production` (`br-tiny-breeze-b6myuwd2`) |
+| Região | `sa-east-1` |
+| Auth | Neon Auth (Managed Better Auth), base em `NEON_AUTH_BASE_URL` |
+
+`neon.ts` declara `auth: true`. `neon status` / `neon config plan` mostram o estado do branch.
+`neon deploy` aplica o `neon.ts` e puxa as variáveis para o `.env`.
+
+### Variáveis
+
+- `DATABASE_URL` — pooled, usada pelo app (`src/lib/prisma.ts`).
+- `DATABASE_URL_UNPOOLED` — direta, usada por migrations (`prisma.config.ts`).
+- `NEON_AUTH_BASE_URL`, `NEON_AUTH_JWKS_URL`, `NEON_BRANCH` — puxadas pelo Neon.
+- `NEON_AUTH_COOKIE_SECRET` — segredo da aplicação (32+ chars), **não** vem do Neon.
+
+### Tooling instalado
+
+- CLI `neon` 8.13.0 global (login OAuth no profile `DEFAULT`).
+- Skills em `.agents/skills/` (project-level, gitignored): `neon`, `neon-postgres`, `neon-auth`.
+- MCP do Neon em `opencode.json` (project-level, OAuth, sem API key no repo).
+- Config global do OpenCode (`~/.config/opencode/opencode.json`) preservada.
+
+### Rotas criadas
+
+- `/api/auth/[...path]` — proxy para o Neon Auth.
+- `/api/health` — `SELECT 1` via Prisma, prova a conexão com o Postgres.
+
+### Teste rápido (com o servidor rodando)
+
+```bash
+curl -s http://localhost:3000/api/health
+# {"database":"ok"}
+
+curl -s -X POST http://localhost:3000/api/auth/sign-up/email \
+  -H "Content-Type: application/json" \
+  -d '{"email":"you@example.com","password":"TestPassword123!","name":"You"}'
+```
+
+O cookie de sessão se chama `__Secure-neon-auth.session_token` e o valor completo é
+`token.assinatura` (não use só o `token` do corpo da resposta).
+
