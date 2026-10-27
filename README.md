@@ -51,31 +51,34 @@ src/
 
 ## Getting started
 
-Requirements: Node.js 20+, pnpm, Docker.
+Requirements: Node.js 22.13+, pnpm, and PostgreSQL. The database can come from Docker
+(`docker compose up -d`) or from a hosted instance such as Neon.
 
 ```bash
 git clone <repo-url>
 cd mini-erp
-cp .env.example .env
-docker compose up -d
+cp .env.example .env   # point DATABASE_URL at your database
 pnpm install
 pnpm prisma migrate dev
-pnpm prisma db seed
 pnpm dev
 ```
 
-The app runs at `http://localhost:3000`.
+The app runs at `http://localhost:3000`. The seed script arrives in Phase 5.
 
 ## Scripts
 
 | Command | What it does |
 | --- | --- |
 | `pnpm dev` | Start the development server |
-| `pnpm build` | Production build |
+| `pnpm build` | Generate the Prisma client and build for production |
+| `pnpm start` | Serve the production build |
 | `pnpm lint` | Run ESLint |
 | `pnpm typecheck` | Run TypeScript checks |
 | `pnpm test` | Run unit tests |
-| `pnpm test:e2e` | Run end to end tests |
+| `pnpm test:watch` | Run unit tests in watch mode |
+| `pnpm prisma:generate` | Regenerate the Prisma client |
+
+End to end tests (Playwright) are added in Phase 7.
 
 ## Roadmap
 
@@ -89,4 +92,3 @@ The app runs at `http://localhost:3000`.
 ## Author
 
 Built by Pedro, frontend and full stack developer from Santa Catarina, Brazil.
-# mini-erp
