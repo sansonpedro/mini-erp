@@ -43,3 +43,5 @@ jobs:
         run: pnpm build
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/mini_erp?schema=public"
+          NEON_AUTH_BASE_URL: "http://localhost:3000/api/auth"
+          NEON_AUTH_COOKIE_SECRET: "ci-only-placeholder-secret-32-chars"
