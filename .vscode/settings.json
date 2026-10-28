@@ -1,0 +1,26 @@
+{
+  "files.exclude": {
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/.cache": true,
+    "**/.corepack-cache": true,
+    "**/.codex": true,
+    "**/.claude": true,
+    "**/.agents": true,
+    "**/.windsurf": true,
+    "**/coverage": true,
+    "**/src/generated": true
+  },
+  "search.exclude": {
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/.cache": true,
+    "**/.corepack-cache": true,
+    "**/.codex": true,
+    "**/.claude": true,
+    "**/.agents": true,
+    "**/.windsurf": true,
+    "**/coverage": true,
+    "**/src/generated": true
+  }
+}
