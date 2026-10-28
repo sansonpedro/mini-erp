@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { SignOutButton } from "@/features/auth/components/sign-out-button";
 import { auth } from "@/lib/auth/server";
@@ -30,6 +31,7 @@ export default async function AppPage() {
             <p className="text-sm font-semibold text-primary">Mini ERP</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight">{membership.company.name}</h1>
             <p className="mt-3 text-muted-foreground">You are signed in as {session.user.email}.</p>
+            <Link className="mt-5 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90" href="/app/products">Manage products</Link>
           </div>
           <SignOutButton />
         </div>

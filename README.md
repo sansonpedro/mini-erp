@@ -12,7 +12,7 @@ Most ERP systems are large and hard to learn. This project builds the core of on
 
 - Authentication with sign up, login and protected routes
 - Multi-tenant data: every company only sees its own data
-- Product catalog with SKU, price and minimum stock
+- Product catalog with SKU, price and minimum stock (create, edit, search and deactivate)
 - Stock control based on movement history (entries, sales, adjustments)
 - Sales with multiple items, blocked when stock is not enough
 - Dashboard with daily sales and low stock alerts
@@ -21,7 +21,7 @@ Most ERP systems are large and hard to learn. This project builds the core of on
 
 - **App:** Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Phosphor Icons
 - **Forms:** React Hook Form + Zod
-- **Auth:** Better Auth
+- **Auth:** Neon Auth (Managed Better Auth)
 - **Database:** PostgreSQL with Prisma
 - **Tests:** Vitest, Playwright
 - **Tooling:** pnpm, Docker Compose, GitHub Actions
@@ -63,7 +63,9 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-The app runs at `http://localhost:3000`. The seed script arrives in Phase 5.
+The app runs at `http://localhost:3000`. Sign up at `/signup`, create your company, and manage products at `/app/products`. The seed script arrives in Phase 5.
+
+Database changes are versioned in `prisma/migrations`. For a hosted database, apply pending migrations with `pnpm prisma migrate deploy`; for local development, use `pnpm prisma migrate dev`.
 
 ## Scripts
 
@@ -82,7 +84,11 @@ End to end tests (Playwright) are added in Phase 7.
 
 ## Roadmap
 
-- [ ] MVP: auth, company, products, stock, sales, dashboard
+- [x] Auth, company onboarding and protected app routes
+- [x] Products: create, edit, search and deactivate
+- [ ] Stock: entries, adjustments and movement history
+- [ ] Sales with stock validation and automatic movements
+- [ ] Dashboard with daily sales, low stock and latest movements
 - [ ] Accounts payable and receivable
 - [ ] Reports and CSV export
 - [ ] Multiple users per company with roles
