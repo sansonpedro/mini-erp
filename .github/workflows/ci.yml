@@ -38,3 +38,7 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          # Build-time placeholders only; production must provide real Neon Auth values.
+          NEON_AUTH_BASE_URL: https://ci.invalid/neon-auth
+          NEON_AUTH_COOKIE_SECRET: ci-only-placeholder-cookie-secret-32-chars
