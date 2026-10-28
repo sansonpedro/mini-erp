@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { Package } from "@phosphor-icons/react/dist/ssr";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -13,7 +14,9 @@ export default function Home() {
           A multi-tenant mini ERP for small businesses. Companies manage products, stock and sales in one place, and stock updates automatically with every sale.
         </p>
         <div className="mt-2">
-          <Button>Setup Complete (Phase 0)</Button>
+          <Link className={buttonVariants()} href="/signup">
+            Create your account
+          </Link>
         </div>
       </div>
     </main>

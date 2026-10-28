@@ -4,44 +4,35 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
-  ci:
-    name: Lint, Typecheck, Test, Build
+  checks:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: "pnpm"
+          node-version: 24
+          cache: pnpm
+
+      - name: Enable pnpm
+        run: corepack enable
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma client
-        run: pnpm prisma:generate
-
-      - name: Run ESLint
+      - name: Lint
         run: pnpm lint
 
-      - name: Run TypeScript typecheck
+      - name: Typecheck
         run: pnpm typecheck
 
-      - name: Run Vitest tests
+      - name: Test
         run: pnpm test
 
-      - name: Run production build
+      - name: Build
         run: pnpm build
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/mini_erp?schema=public"
-          NEON_AUTH_BASE_URL: "http://localhost:3000/api/auth"
-          NEON_AUTH_COOKIE_SECRET: "ci-only-placeholder-secret-32-chars"
