@@ -13,9 +13,12 @@ export default function Home() {
         <p className="text-muted-foreground text-sm leading-relaxed">
           A multi-tenant mini ERP for small businesses. Companies manage products, stock and sales in one place, and stock updates automatically with every sale.
         </p>
-        <div className="mt-2">
+        <div className="mt-2 flex items-center gap-3">
           <Link className={buttonVariants()} href="/signup">
             Create your account
+          </Link>
+          <Link className={buttonVariants({ variant: "outline" })} href="/login">
+            Sign in
           </Link>
         </div>
       </div>
