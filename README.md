@@ -47,14 +47,13 @@ src/
   components/ui/       # shadcn components
   lib/                 # prisma client, auth config, utils
 prisma/                # schema, migrations and seed
-docs/                  # PLAN.md, HANDOFF.md, SECURITY.md, decisions/
+docs/                  # PLAN.md, dependency-exceptions.md, decisions/
 AGENTS.md              # single source of instructions for AI agents
 components.json        # shadcn config
 docker-compose.yml     # local PostgreSQL
 eslint.config.mjs      # lint rules
 neon.ts                # Neon config
 next.config.ts         # Next.js config
-opencode.json          # opencode agent config
 package.json           # dependencies and scripts
 pnpm-lock.yaml         # lockfile
 pnpm-workspace.yaml    # pnpm settings and security overrides
