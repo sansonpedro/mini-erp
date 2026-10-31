@@ -17,7 +17,7 @@ export function RecentProducts({ companyId, products }: { companyId: string; pro
     <Card>
       <CardHeader className="flex-row items-center justify-between gap-4">
         <CardTitle>Recent products</CardTitle>
-        <Button variant="link" render={<Link href={`/app/${companyId}/products`} />}>
+        <Button nativeButton={false} variant="link" render={<Link href={`/app/${companyId}/products`} />}>
           View all
         </Button>
       </CardHeader>
@@ -25,7 +25,7 @@ export function RecentProducts({ companyId, products }: { companyId: string; pro
         {products.length === 0 ? (
           <div className="flex flex-col items-start gap-3 rounded-md border border-dashed p-6">
             <p className="text-sm text-muted-foreground">No products yet.</p>
-            <Button render={<Link href={`/app/${companyId}/products`} />}>Create product</Button>
+            <Button nativeButton={false} render={<Link href={`/app/${companyId}/products`} />}>Create product</Button>
           </div>
         ) : (
           <div className="divide-y">

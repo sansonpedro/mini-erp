@@ -40,7 +40,7 @@ export function AppTopbar({ companyId, companyName }: { companyId: string; compa
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Button className="ml-auto" render={<Link href={`/app/${companyId}/products`} />}>
+      <Button nativeButton={false} className="ml-auto" render={<Link href={`/app/${companyId}/products`} />}>
         New product
       </Button>
     </header>
