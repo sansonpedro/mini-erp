@@ -51,6 +51,7 @@ yarn-error.log*
 .claude/
 .windsurf/
 .codex/
+opencode.json
 
 # pnpm and editor state
 .vscode/*
