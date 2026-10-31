@@ -41,12 +41,29 @@ Longer notes are in `docs/decisions/`.
 ## Project structure
 
 ```
-prisma/              # schema and seed
 src/
-  app/               # routes
-  features/          # auth, company, products, stock, sales, dashboard
-  components/ui/     # shadcn components
-  lib/               # prisma client, auth config, utils
+  app/                 # routes (Next.js App Router)
+  features/            # auth, company, products, stock, sales, dashboard
+  components/ui/       # shadcn components
+  lib/                 # prisma client, auth config, utils
+prisma/                # schema, migrations and seed
+docs/                  # PLAN.md, HANDOFF.md, SECURITY.md, decisions/
+AGENTS.md              # single source of instructions for AI agents
+components.json        # shadcn config
+docker-compose.yml     # local PostgreSQL
+eslint.config.mjs      # lint rules
+neon.ts                # Neon config
+next.config.ts         # Next.js config
+opencode.json          # opencode agent config
+package.json           # dependencies and scripts
+pnpm-lock.yaml         # lockfile
+pnpm-workspace.yaml    # pnpm settings and security overrides
+prisma.config.ts       # Prisma config
+proxy.ts               # Next.js proxy (request interception)
+tsconfig.json          # TypeScript config
+vitest.config.mts      # test config
+.env.example           # env template (database uses sslmode=verify-full)
+.gitignore             # ignored files
 ```
 
 ## Getting started
@@ -69,16 +86,16 @@ Database changes are versioned in `prisma/migrations`. For a hosted database, ap
 
 ## Scripts
 
-| Command | What it does |
-| --- | --- |
-| `pnpm dev` | Start the development server |
-| `pnpm build` | Generate the Prisma client and build for production |
-| `pnpm start` | Serve the production build |
-| `pnpm lint` | Run ESLint |
-| `pnpm typecheck` | Run TypeScript checks |
-| `pnpm test` | Run unit tests |
-| `pnpm test:watch` | Run unit tests in watch mode |
-| `pnpm prisma:generate` | Regenerate the Prisma client |
+| Command                | What it does                                        |
+| ---------------------- | --------------------------------------------------- |
+| `pnpm dev`             | Start the development server                        |
+| `pnpm build`           | Generate the Prisma client and build for production |
+| `pnpm start`           | Serve the production build                          |
+| `pnpm lint`            | Run ESLint                                          |
+| `pnpm typecheck`       | Run TypeScript checks                               |
+| `pnpm test`            | Run unit tests                                      |
+| `pnpm test:watch`      | Run unit tests in watch mode                        |
+| `pnpm prisma:generate` | Regenerate the Prisma client                        |
 
 End to end tests (Playwright) are added in Phase 7.
 

@@ -10,26 +10,27 @@ This is a portfolio project. The goal is a small product that works end to end, 
 
 ## 2. Stack
 
-| Area | Choice |
-| --- | --- |
-| Framework | Next.js (App Router), TypeScript strict |
-| UI | Tailwind CSS, shadcn/ui, Phosphor Icons |
-| Forms and validation | React Hook Form + Zod |
-| Auth | Better Auth |
-| Database | PostgreSQL |
-| ORM | Prisma |
-| Package manager | pnpm |
-| Tests | Vitest (logic), Playwright (2 or 3 main flows) |
-| CI/CD | GitHub Actions |
-| Local infra | Docker Compose (Postgres) |
-| Hosting | Vercel (app) + Neon (database) |
-| Observability | OpenTelemetry (later, phase 2) |
+| Area                 | Choice                                         |
+| -------------------- | ---------------------------------------------- |
+| Framework            | Next.js (App Router), TypeScript strict        |
+| UI                   | Tailwind CSS, shadcn/ui, Phosphor Icons        |
+| Forms and validation | React Hook Form + Zod                          |
+| Auth                 | Better Auth                                    |
+| Database             | PostgreSQL                                     |
+| ORM                  | Prisma                                         |
+| Package manager      | pnpm                                           |
+| Tests                | Vitest (logic), Playwright (2 or 3 main flows) |
+| CI/CD                | GitHub Actions                                 |
+| Local infra          | Docker Compose (Postgres)                      |
+| Hosting              | Vercel (app) + Neon (database)                 |
+| Observability        | OpenTelemetry (later, phase 2)                 |
 
 ## 3. MVP scope
 
 The MVP is the smallest version that works from start to finish.
 
 **In:**
+
 - Sign up, log in, log out
 - Create a company on first login. Every user belongs to one company
 - Products: create, edit, list, deactivate
@@ -40,6 +41,7 @@ The MVP is the smallest version that works from start to finish.
 - Deployed on Vercel + Neon
 
 **Out for now (phase 2):**
+
 - Accounts payable and receivable
 - Reports and exports
 - Multiple users per company with roles
@@ -59,6 +61,7 @@ If a task is not needed for the in-scope flow, it waits.
 - **SaleItem**: id, saleId, productId, quantity, unitPriceInCents
 
 Rules:
+
 - Every business table has `companyId`, and every query filters by it.
 - Money is stored as integer cents. Never use floats.
 - Current stock is the sum of movements for a product. No separate stock counter to keep in sync.
@@ -95,6 +98,7 @@ features/products/
 ```
 
 Rules:
+
 - No `core`, `shared`, `common` or `utils` folders beyond `lib/` and `components/ui/`.
 - Code lives in the feature that uses it. If two features need it, move it to `lib/` only after the second use.
 - A feature may import queries from another feature. Avoid circular imports.
@@ -128,6 +132,7 @@ Vercel + Neon, environment variables, migrations on deploy.
 Playwright tests for the main flows, screenshots, README with live link.
 
 Rough timeline (target: live demo by Nov 16):
+
 - Week 1: phases 0 to 2
 - Week 2: phases 3 and 4
 - Week 3: phases 5 to 7

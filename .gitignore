@@ -1,6 +1,14 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# dependencies and local caches
+.env
+/.next/
+/node_modules/
+/.corepack-cache/
+/.pnpm-store/
+*.tsbuildinfo
+/.neon
+next-env.d.ts
 /node_modules
 /.pnp
 .pnp.*
@@ -14,7 +22,6 @@
 /coverage
 
 # next.js
-/.next/
 /out/
 
 # production
@@ -37,15 +44,16 @@ yarn-error.log*
 # vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
 /src/generated/prisma
 
 # editor and agent tools
 .agents/
 .claude/
 .windsurf/
+.codex/
+
+# pnpm and editor state
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 skills-lock.json
-.neon
