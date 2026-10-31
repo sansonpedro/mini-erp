@@ -23,7 +23,7 @@ model Company {
 model CompanyMember {
   id        String   @id @default(cuid())
   companyId String
-  userId    String   @unique
+  userId    String
   createdAt DateTime @default(now())
   company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 

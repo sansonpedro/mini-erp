@@ -1,24 +1,11 @@
-import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
 
-export async function getCurrentCompany() {
-  const { data: session } = await auth.getSession();
-  if (!session?.user) return null;
-
-  return prisma.companyMember.findUnique({
-    where: { userId: session.user.id },
-    select: { companyId: true },
-  });
-}
-
-export async function getProducts(search?: string) {
-  const membership = await getCurrentCompany();
-  if (!membership) return [];
-
+export async function getProducts(companyId: string, search?: string) {
   const normalizedSearch = search?.trim();
+
   return prisma.product.findMany({
     where: {
-      companyId: membership.companyId,
+      companyId,
       active: true,
       ...(normalizedSearch
         ? {
@@ -33,11 +20,8 @@ export async function getProducts(search?: string) {
   });
 }
 
-export async function getProductById(id: string) {
-  const membership = await getCurrentCompany();
-  if (!membership) return null;
-
+export async function getProductById(companyId: string, id: string) {
   return prisma.product.findFirst({
-    where: { id, companyId: membership.companyId, active: true },
+    where: { id, companyId, active: true },
   });
 }

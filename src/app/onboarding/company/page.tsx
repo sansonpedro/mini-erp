@@ -12,11 +12,11 @@ export default async function CompanyOnboardingPage() {
     redirect("/signup");
   }
 
-  const existingMember = await prisma.companyMember.findUnique({
+  const existingMember = await prisma.companyMember.findFirst({
     where: { userId: session.user.id },
   });
   if (existingMember) {
-    redirect("/app");
+    redirect("/workspaces");
   }
 
   return (

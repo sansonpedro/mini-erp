@@ -32,7 +32,11 @@ export function CompanyForm() {
         setServerError(result.error);
         return;
       }
-      router.push("/app");
+      if (!result.companyId) {
+        setServerError("We could not find the new company. Please try again.");
+        return;
+      }
+      router.push(`/app/${result.companyId}`);
       router.refresh();
     });
   }

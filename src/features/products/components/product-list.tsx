@@ -5,12 +5,11 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { deactivateProductAction } from "@/features/products/actions";
+import { formatMoney } from "@/lib/format-money";
 
 type Product = { id: string; name: string; sku: string; priceInCents: number; minStock: number };
 
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
-export function ProductList({ products }: { products: Product[] }) {
+export function ProductList({ companyId, products }: { companyId: string; products: Product[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +17,7 @@ export function ProductList({ products }: { products: Product[] }) {
   function deactivate(id: string) {
     setError(null);
     startTransition(async () => {
-      const result = await deactivateProductAction({ id });
+      const result = await deactivateProductAction({ companyId, id });
       if (result.error) {
         setError(result.error);
         return;
@@ -39,10 +38,10 @@ export function ProductList({ products }: { products: Product[] }) {
           <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between" key={product.id}>
             <div>
               <p className="font-medium">{product.name}</p>
-              <p className="text-sm text-muted-foreground">{product.sku} · {currency.format(product.priceInCents / 100)} · min. {product.minStock}</p>
+              <p className="text-sm text-muted-foreground">{product.sku} · {formatMoney(product.priceInCents)} · min. {product.minStock}</p>
             </div>
             <div className="flex gap-2">
-              <Link className="rounded-lg border border-border px-3 py-2 text-sm font-medium transition hover:bg-muted" href={`/app/products/${product.id}/edit`}>Edit</Link>
+              <Link className="rounded-lg border border-border px-3 py-2 text-sm font-medium transition hover:bg-muted" href={`/app/${companyId}/products/${product.id}/edit`}>Edit</Link>
               <button className="rounded-lg border border-destructive/30 px-3 py-2 text-sm font-medium text-destructive transition hover:bg-destructive/10 disabled:opacity-60" disabled={isPending} onClick={() => deactivate(product.id)} type="button">Deactivate</button>
             </div>
           </div>

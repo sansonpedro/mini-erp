@@ -3,40 +3,38 @@
 import { revalidatePath } from "next/cache";
 
 import { productIdSchema, productSchema } from "@/features/products/schemas";
-import { getCurrentCompany } from "@/features/products/queries";
+import { getCompanyAccess } from "@/features/company/get-company-access";
 import { prisma } from "@/lib/prisma";
 
 type ActionResult = { error?: string; success?: true };
 
-export async function createProductAction(input: unknown): Promise<ActionResult> {
-  const validation = productSchema.safeParse(input);
+export async function createProductAction(input: { companyId: string; product: unknown }): Promise<ActionResult> {
+  const validation = productSchema.safeParse(input.product);
   if (!validation.success) {
     return { error: validation.error.issues[0]?.message ?? "Enter valid product details." };
   }
 
-  const membership = await getCurrentCompany();
-  if (!membership) return { error: "You need a company before adding products." };
+  const access = await getCompanyAccess(input.companyId);
 
   try {
-    await prisma.product.create({ data: { ...validation.data, companyId: membership.companyId } });
+    await prisma.product.create({ data: { ...validation.data, companyId: access.company.id } });
   } catch {
     return { error: "That SKU is already in use in your company." };
   }
 
-  revalidatePath("/app/products");
+  revalidatePath(`/app/${input.companyId}/products`);
   return { success: true };
 }
 
-export async function updateProductAction(input: unknown): Promise<ActionResult> {
+export async function updateProductAction(input: { companyId: string; id: unknown; product: unknown }): Promise<ActionResult> {
   const parsedInput = parseProductUpdateInput(input);
   if (!parsedInput.success) return { error: parsedInput.error };
 
-  const membership = await getCurrentCompany();
-  if (!membership) return { error: "You need a company before editing products." };
+  await getCompanyAccess(input.companyId);
 
   try {
     const result = await prisma.product.updateMany({
-      where: { id: parsedInput.data.id, companyId: membership.companyId, active: true },
+      where: { id: parsedInput.data.id, companyId: input.companyId, active: true },
       data: parsedInput.data.product,
     });
     if (result.count === 0) return { error: "Product not found." };
@@ -44,8 +42,8 @@ export async function updateProductAction(input: unknown): Promise<ActionResult>
     return { error: "That SKU is already in use in your company." };
   }
 
-  revalidatePath("/app/products");
-  revalidatePath(`/app/products/${parsedInput.data.id}/edit`);
+  revalidatePath(`/app/${input.companyId}/products`);
+  revalidatePath(`/app/${input.companyId}/products/${parsedInput.data.id}/edit`);
   return { success: true };
 }
 
@@ -59,20 +57,19 @@ function parseProductUpdateInput(input: unknown) {
   return { success: true as const, data: { id: id.data.id, product: product.data } };
 }
 
-export async function deactivateProductAction(input: unknown): Promise<ActionResult> {
+export async function deactivateProductAction(input: { companyId: string; id: unknown }): Promise<ActionResult> {
   const validation = productIdSchema.safeParse(input);
   if (!validation.success) return { error: "Product not found." };
 
-  const membership = await getCurrentCompany();
-  if (!membership) return { error: "You need a company before editing products." };
+  await getCompanyAccess(input.companyId);
 
   const result = await prisma.product.updateMany({
-    where: { id: validation.data.id, companyId: membership.companyId, active: true },
+    where: { id: validation.data.id, companyId: input.companyId, active: true },
     data: { active: false },
   });
   if (result.count === 0) return { error: "Product not found." };
 
-  revalidatePath("/app/products");
-  revalidatePath(`/app/products/${validation.data.id}/edit`);
+  revalidatePath(`/app/${input.companyId}/products`);
+  revalidatePath(`/app/${input.companyId}/products/${validation.data.id}/edit`);
   return { success: true };
 }

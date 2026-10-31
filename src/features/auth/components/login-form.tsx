@@ -46,7 +46,7 @@ export function LoginForm() {
         return;
       }
 
-      router.push("/app");
+      router.push("/workspaces");
       router.refresh();
     } catch {
       setAuthError("We could not sign you in. Please try again.");

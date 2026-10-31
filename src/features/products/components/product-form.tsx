@@ -9,7 +9,7 @@ import { productSchema, type ProductFormValues } from "@/features/products/schem
 
 type ExistingProduct = { id: string; name: string; sku: string; priceInCents: number; minStock: number };
 
-export function ProductForm({ product }: { product?: ExistingProduct }) {
+export function ProductForm({ companyId, product }: { companyId: string; product?: ExistingProduct }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { register, handleSubmit, setError, formState: { errors } } = useForm<ProductFormValues>({
@@ -30,13 +30,13 @@ export function ProductForm({ product }: { product?: ExistingProduct }) {
 
     startTransition(async () => {
       const result = product
-        ? await updateProductAction({ id: product.id, product: validation.data })
-        : await createProductAction(validation.data);
+        ? await updateProductAction({ companyId, id: product.id, product: validation.data })
+        : await createProductAction({ companyId, product: validation.data });
       if (result.error) {
         setError("root.server", { message: result.error });
         return;
       }
-      router.push("/app/products");
+      router.push(`/app/${companyId}/products`);
       router.refresh();
     });
   }
