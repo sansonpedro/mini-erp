@@ -3,6 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -24,17 +34,22 @@ function getInitials(name: string, email: string) {
 export function WorkspaceUserMenu({ name, email }: { name: string; email: string }) {
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   async function signOut() {
     setIsSigningOut(true);
-    await authClient.signOut();
+    const { error } = await authClient.signOut();
+    if (error) {
+      setIsSigningOut(false);
+      return;
+    }
     router.push("/login");
     router.refresh();
   }
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex w-full items-center gap-3 rounded-md p-2 text-left hover:bg-muted">
+      <DropdownMenuTrigger className="flex items-center gap-3 rounded-md p-2 text-left hover:bg-muted">
         <Avatar className="size-8">
           <AvatarFallback>{getInitials(name, email)}</AvatarFallback>
         </Avatar>
@@ -43,11 +58,32 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
           <span className="block truncate text-xs text-muted-foreground">{email}</span>
         </span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuItem disabled={isSigningOut} onSelect={signOut}>
-          {isSigningOut ? "Signing out…" : "Sign out"}
+      <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuItem
+          onSelect={(event) => {
+            event.preventDefault();
+            setIsConfirmOpen(true);
+          }}
+        >
+          Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
+      <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sign out of Mini ERP?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You will need to sign in again to access your workspaces.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSigningOut}>Cancel</AlertDialogCancel>
+            <AlertDialogAction disabled={isSigningOut} onClick={signOut}>
+              {isSigningOut ? "Signing out…" : "Sign out"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DropdownMenu>
   );
 }

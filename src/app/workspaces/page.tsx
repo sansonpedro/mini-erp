@@ -16,7 +16,7 @@ export default async function WorkspacesPage() {
 
   return (
     <main className="min-h-screen bg-muted/30 px-6 py-12">
-      <div className="mx-auto max-w-5xl space-y-8">
+      <div className="mx-auto max-w-7xl space-y-8">
         <header className="flex items-start justify-between gap-6">
           <div>
             <p className="text-sm font-semibold text-primary">Mini ERP</p>
@@ -25,7 +25,7 @@ export default async function WorkspacesPage() {
           </div>
           <WorkspaceUserMenu name={user.name ?? ""} email={user.email} />
         </header>
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid gap-4 sm:grid-cols-2">
           {memberships.map(({ company }) => (
             <WorkspaceCard key={company.id} workspace={company} />
           ))}
