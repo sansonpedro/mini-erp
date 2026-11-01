@@ -8,8 +8,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth/client";
@@ -46,8 +44,6 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>{name || email}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem disabled={isSigningOut} onSelect={signOut}>
           {isSigningOut ? "Signing out…" : "Sign out"}
         </DropdownMenuItem>
