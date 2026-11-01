@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SignOut } from "@phosphor-icons/react";
 
 import {
   AlertDialog,
@@ -65,6 +66,7 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
             setIsConfirmOpen(true);
           }}
         >
+          <SignOut size={16} />
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -79,6 +81,7 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isSigningOut}>Cancel</AlertDialogCancel>
             <AlertDialogAction disabled={isSigningOut} onClick={signOut}>
+              <SignOut size={16} />
               {isSigningOut ? "Signing out…" : "Sign out"}
             </AlertDialogAction>
           </AlertDialogFooter>
