@@ -13,14 +13,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth/client";
 
 function getInitials(name: string, email: string) {
@@ -35,7 +30,6 @@ function getInitials(name: string, email: string) {
 export function WorkspaceUserMenu({ name, email }: { name: string; email: string }) {
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   async function signOut() {
     setIsSigningOut(true);
@@ -49,8 +43,8 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-3 rounded-md p-2 text-left hover:bg-muted">
+    <AlertDialog>
+      <div className="flex items-center gap-3 rounded-md p-2 text-left">
         <Avatar className="size-8">
           <AvatarFallback>{getInitials(name, email)}</AvatarFallback>
         </Avatar>
@@ -58,19 +52,14 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
           <span className="block truncate text-sm font-medium">{name || email}</span>
           <span className="block truncate text-xs text-muted-foreground">{email}</span>
         </span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuItem
-          onSelect={(event) => {
-            event.preventDefault();
-            setIsConfirmOpen(true);
-          }}
+        <AlertDialogTrigger
+          aria-label="Sign out"
+          className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+          title="Sign out"
         >
-          <SignOut size={16} />
-          Sign out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-      <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+          <SignOut size={17} />
+        </AlertDialogTrigger>
+      </div>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Sign out of Mini ERP?</AlertDialogTitle>
@@ -86,7 +75,6 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
-    </DropdownMenu>
+    </AlertDialog>
   );
 }
