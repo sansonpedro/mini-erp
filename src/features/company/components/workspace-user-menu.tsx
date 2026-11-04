@@ -62,7 +62,7 @@ export function WorkspaceUserMenu({ name, email }: { name: string; email: string
       </div>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Sign out of Mini ERP?</AlertDialogTitle>
+            <AlertDialogTitle>Sign out of Mini WMS?</AlertDialogTitle>
             <AlertDialogDescription>
               You will need to sign in again to access your workspaces.
             </AlertDialogDescription>

@@ -27,6 +27,7 @@
 ## Not implemented yet
 
 - Sales and outbound movement pages.
+- `Sale`/`SaleItem` models and transactional stock validation for sales.
 - Dashboard sales, low-stock and latest-movement metrics.
 - Seed data and end-to-end tests.
 - Settings.
