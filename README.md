@@ -1,6 +1,6 @@
-# Mini ERP
+# Mini WMS
 
-A multi-tenant mini ERP for small businesses. Companies manage products, stock and sales in one place, and stock updates automatically with every sale.
+A multi-tenant warehouse management system for small businesses. Companies manage products, stock, movements and outbound sales in one focused workspace.
 
 > Status: in development. Live demo: _coming soon_
 
@@ -67,7 +67,7 @@ vitest.config.mts      # test config
 
 ## Getting started
 
-Requirements: Node.js 22.13+, pnpm, and PostgreSQL. The database can come from Docker
+Requirements: Node.js 24+, pnpm, and PostgreSQL. The database can come from Docker
 (`docker compose up -d`) or from a hosted instance such as Neon.
 
 ```bash
@@ -79,7 +79,7 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-The app runs at `http://localhost:3000`. Sign up at `/signup`, create your company, and manage products at `/app/products`. The seed script arrives in Phase 5.
+The app runs at `http://localhost:3000`. Sign up at `/signup`, create your company, and manage products and stock at `/app/[companyId]/products` and `/app/[companyId]/stock`.
 
 Database changes are versioned in `prisma/migrations`. For a hosted database, apply pending migrations with `pnpm prisma migrate deploy`; for local development, use `pnpm prisma migrate dev`.
 
@@ -102,7 +102,7 @@ End to end tests (Playwright) are added in Phase 7.
 
 - [x] Auth, company onboarding and protected app routes
 - [x] Products: create, edit, search and deactivate
-- [ ] Stock: entries, adjustments and movement history
+- [x] Stock: entries, adjustments and movement history
 - [ ] Sales with stock validation and automatic movements
 - [ ] Dashboard with daily sales, low stock and latest movements
 - [ ] Accounts payable and receivable

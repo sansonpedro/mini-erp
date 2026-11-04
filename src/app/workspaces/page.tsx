@@ -19,7 +19,7 @@ export default async function WorkspacesPage() {
       <div className="mx-auto max-w-7xl space-y-8">
         <header className="flex items-start justify-between gap-6">
           <div>
-            <p className="text-sm font-semibold text-primary">Mini ERP</p>
+            <p className="text-sm font-semibold text-primary">Mini WMS</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight">Choose a workspace</h1>
             <p className="mt-2 text-muted-foreground">Select a company to continue.</p>
           </div>

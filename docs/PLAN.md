@@ -1,10 +1,10 @@
 # PLAN.md
 
-Working plan for the Mini ERP. Agents and humans should read this before writing code.
+Working plan for the Mini WMS. Agents and humans should read this before writing code.
 
 ## 1. Goal
 
-A multi-tenant mini ERP for small businesses. A company signs up, registers products, receives stock and records sales. Stock updates automatically with every sale.
+A multi-tenant warehouse management system for small businesses. A company signs up, registers products, receives stock and records outbound sales. Stock updates automatically with every sale.
 
 This is a portfolio project. The goal is a small product that works end to end, is deployed, and has code and decisions I can explain in an interview.
 
@@ -32,7 +32,7 @@ The MVP is the smallest version that works from start to finish.
 **In:**
 
 - Sign up, log in, log out
-- Create a company on first login. Every user belongs to one company
+- Create a company on first login. A user can belong to one or more companies
 - Products: create, edit, list, deactivate
 - Stock: manual stock entries and adjustments, current stock per product, movement history
 - Sales: create a sale with items, block it if stock is not enough, stock goes down automatically

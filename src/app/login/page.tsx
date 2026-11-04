@@ -14,7 +14,7 @@ export default function LoginPage() {
           <div className="absolute left-1/2 top-1/2 -z-10 h-40 w-72 -translate-x-1/2 -translate-y-1/2 rotate-[-18deg] rounded-[50%] border border-white/10" />
           <div className="flex items-center gap-3">
             <span className="flex size-9 items-center justify-center rounded-xl bg-white text-zinc-950"><Package size={20} weight="duotone" /></span>
-            <span className="text-sm font-semibold tracking-wide">Mini ERP</span>
+            <span className="text-sm font-semibold tracking-wide">Mini WMS</span>
           </div>
           <div className="relative mt-24 max-w-md sm:mt-32 lg:mt-40">
             <p className="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400">One clear view of your business</p>
@@ -30,7 +30,7 @@ export default function LoginPage() {
           <div className="w-full max-w-sm">
             <div className="mb-10"><p className="text-sm font-medium text-primary">Your workspace</p><h2 className="mt-3 text-3xl font-semibold tracking-tight">Sign in to continue</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">Enter your details to access your business.</p></div>
             <LoginForm />
-            <p className="mt-8 text-center text-sm text-muted-foreground">New to Mini ERP?{" "}<Link className="inline-flex items-center gap-1 font-medium text-foreground underline underline-offset-4" href="/signup">Create an account <ArrowUpRight size={14} /></Link></p>
+            <p className="mt-8 text-center text-sm text-muted-foreground">New to Mini WMS?{" "}<Link className="inline-flex items-center gap-1 font-medium text-foreground underline underline-offset-4" href="/signup">Create an account <ArrowUpRight size={14} /></Link></p>
           </div>
         </div>
       </section>
