@@ -15,21 +15,15 @@ export async function createCompanyAction(input: unknown): Promise<{ error?: str
     return { error: "Your session has expired. Please sign in again." };
   }
 
-  const existingMember = await prisma.companyMember.findFirst({
-    where: { userId: session.user.id },
-  });
-  if (existingMember) {
-    return { error: "You already belong to a company." };
-  }
-
   try {
-    const membership = await prisma.companyMember.create({
+    const company = await prisma.company.create({
       data: {
-        userId: session.user.id,
-        company: { create: { name: validation.data.name } },
+        name: validation.data.name,
+        members: { create: { userId: session.user.id } },
       },
+      select: { id: true },
     });
-    return { companyId: membership.companyId };
+    return { companyId: company.id };
   } catch {
     return { error: "We could not create your company. Please try again." };
   }

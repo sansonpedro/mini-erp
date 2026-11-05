@@ -8,6 +8,7 @@ export async function getStockOverview(companyId: string) {
       id: true,
       name: true,
       sku: true,
+      priceInCents: true,
       minStock: true,
       stockMovements: { select: { quantity: true } },
     },

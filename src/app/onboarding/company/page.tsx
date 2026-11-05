@@ -12,13 +12,6 @@ export default async function CompanyOnboardingPage() {
     redirect("/signup");
   }
 
-  const existingMember = await prisma.companyMember.findFirst({
-    where: { userId: session.user.id },
-  });
-  if (existingMember) {
-    redirect("/workspaces");
-  }
-
   return (
     <main className="flex min-h-screen items-center justify-center bg-muted/30 px-6 py-12">
       <section className="w-full max-w-md rounded-2xl border border-border bg-background p-8 shadow-sm">

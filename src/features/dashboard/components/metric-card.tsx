@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function MetricCard({ label, value }: { label: string; value: number }) {
+export function MetricCard({ label, value }: { label: string; value: number | string }) {
   return (
     <Card>
       <CardHeader className="pb-2">

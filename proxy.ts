@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth/server";
 import { NextResponse, type NextRequest } from "next/server";
 
-const authMiddleware = auth.middleware({ loginUrl: "/signup" });
+const authMiddleware = auth.middleware({ loginUrl: "/login" });
 
 export default function proxy(request: NextRequest) {
   const forwardedProtocol = request.headers.get("x-forwarded-proto");

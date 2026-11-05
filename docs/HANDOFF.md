@@ -9,12 +9,13 @@
 - `/app/[companyId]/products` — company product catalog.
 - `/app/[companyId]/products/[id]/edit` — edit a company product.
 - `/app/[companyId]/stock` — current stock, movement history and manual movements.
+- `/app/[companyId]/sales` — record sales and inspect outbound history.
 
 ## Company access
 
 `src/features/company/get-company-access.ts` is the server-side access helper for company-scoped routes. It reads the current session, verifies membership for the `companyId` URL segment, and calls `notFound()` for unauthorized company access. Business queries and actions receive the verified company id and filter by it.
 
-`CompanyMember.userId` is not unique so one user can belong to multiple companies.
+`CompanyMember.userId` is indexed but not unique so one user can belong to multiple companies. The pair `companyId/userId` is unique.
 
 ## Implemented WMS foundation
 
@@ -24,10 +25,7 @@
 - Negative stock blocked for manual adjustments.
 - Recent movement history scoped to the active company.
 
-## Not implemented yet
+## Remaining work
 
-- Sales and outbound movement pages.
-- `Sale`/`SaleItem` models and transactional stock validation for sales.
-- Dashboard sales, low-stock and latest-movement metrics.
-- Seed data and end-to-end tests.
+- Playwright end-to-end tests and screenshots.
 - Settings.

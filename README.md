@@ -6,7 +6,7 @@ Multi-tenant warehouse management system for small businesses. The project is in
 
 ## Current progress
 
-The working flow currently covers authentication, company setup, product management and manual stock control. Sales/outbound operations are planned, but are not implemented yet.
+The working flow currently covers authentication, company setup, product management, stock control and outbound sales.
 
 ### Implemented
 
@@ -19,16 +19,15 @@ The working flow currently covers authentication, company setup, product managem
 - Manual stock entries and positive/negative adjustments.
 - Current stock calculated from movements; negative stock is blocked for adjustments.
 - Recent movement history scoped to the active company.
-- Initial dashboard with active/inactive product metrics, setup checklist and recently created products.
+- Sales with transactional stock validation and automatic outbound movements.
+- Dashboard with sales-of-the-day, low-stock and latest-movement metrics.
+- Seed/demo data through `pnpm prisma db seed` (set `DEMO_USER_ID` to attach it to a user).
 - Security baseline: typed environment validation, request rate limiting for auth/health surfaces, HTTPS redirect and security headers in production.
 - Automated Vitest checks and GitHub Actions CI for lint, typecheck, tests, build and dependency audit.
 
 ### Not implemented yet
 
-- Sales and outbound movement pages.
-- `Sale`/`SaleItem` domain models and transactional stock validation for sales.
-- Dashboard sales-of-the-day, low-stock and latest-movement metrics.
-- Seed/demo data and Playwright end-to-end flows.
+- Playwright end-to-end flows and screenshots.
 - Settings, roles, audit log, reports/export and observability dashboards.
 
 ## Tech stack
@@ -64,6 +63,7 @@ Longer notes are in [`docs/decisions/`](docs/decisions/), with the working plan 
 | `/app/[companyId]/products` | List, search, create and deactivate products |
 | `/app/[companyId]/products/[id]/edit` | Edit a product |
 | `/app/[companyId]/stock` | View current stock, record movements and inspect history |
+| `/app/[companyId]/sales` | Record sales and inspect outbound history |
 | `/api/health` | Health check |
 
 ## Project structure
@@ -113,8 +113,8 @@ Open `http://localhost:3000`, sign up, create a company, add products and record
 - [x] Phase 1 — auth, company onboarding and protected routes
 - [x] Phase 2 — product catalog
 - [x] Phase 3 — manual stock ledger and movement history
-- [ ] Phase 4 — sales with stock validation and automatic outbound movements
-- [ ] Phase 5 — sales-aware dashboard and seed data
+- [x] Phase 4 — sales with stock validation and automatic outbound movements
+- [x] Phase 5 — sales-aware dashboard and seed data
 - [ ] Phase 6 — deployment to Vercel and Neon
 - [ ] Phase 7 — Playwright flows, screenshots and final polish
 - [ ] Phase 8 — accounts payable/receivable, reports, roles, audit log and OpenTelemetry

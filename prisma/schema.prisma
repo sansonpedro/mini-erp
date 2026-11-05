@@ -19,6 +19,7 @@ model Company {
   members   CompanyMember[]
   products  Product[]
   stockMovements StockMovement[]
+  sales     Sale[]
 }
 
 model CompanyMember {
@@ -29,6 +30,8 @@ model CompanyMember {
   company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@index([companyId])
+  @@unique([companyId, userId])
+  @@index([userId])
 }
 
 model Product {
@@ -43,6 +46,7 @@ model Product {
   updatedAt   DateTime @updatedAt
   company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   stockMovements StockMovement[]
+  saleItems   SaleItem[]
 
   @@unique([companyId, sku])
   @@index([companyId, active])
@@ -52,6 +56,31 @@ enum StockMovementType {
   ENTRY
   ADJUSTMENT
   SALE
+}
+
+model Sale {
+  id           String     @id @default(cuid())
+  companyId    String
+  totalInCents Int
+  createdAt    DateTime   @default(now())
+  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  items        SaleItem[]
+  stockMovements StockMovement[]
+
+  @@index([companyId, createdAt])
+}
+
+model SaleItem {
+  id               String  @id @default(cuid())
+  saleId           String
+  productId        String
+  quantity         Int
+  unitPriceInCents Int
+  sale             Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product          Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([saleId])
+  @@index([productId])
 }
 
 model StockMovement {
@@ -65,6 +94,7 @@ model StockMovement {
   createdAt DateTime          @default(now())
   company   Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
   product   Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sale      Sale?             @relation(fields: [saleId], references: [id], onDelete: SetNull)
 
   @@index([companyId, createdAt])
   @@index([companyId, productId, createdAt])

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { productIdSchema, productSchema } from "@/features/products/schemas";
 import { getCompanyAccess } from "@/features/company/get-company-access";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 
 type ActionResult = { error?: string; success?: true };
 
@@ -18,8 +19,9 @@ export async function createProductAction(input: { companyId: string; product: u
 
   try {
     await prisma.product.create({ data: { ...validation.data, companyId: access.company.id } });
-  } catch {
-    return { error: "That SKU is already in use in your company." };
+  } catch (error) {
+    if (isUniqueConstraintError(error)) return { error: "That SKU is already in use in your company." };
+    return { error: "We could not create the product. Please try again." };
   }
 
   revalidatePath(`/app/${input.companyId}/products`);
@@ -38,13 +40,18 @@ export async function updateProductAction(input: { companyId: string; id: unknow
       data: parsedInput.data.product,
     });
     if (result.count === 0) return { error: "Product not found." };
-  } catch {
-    return { error: "That SKU is already in use in your company." };
+  } catch (error) {
+    if (isUniqueConstraintError(error)) return { error: "That SKU is already in use in your company." };
+    return { error: "We could not update the product. Please try again." };
   }
 
   revalidatePath(`/app/${input.companyId}/products`);
   revalidatePath(`/app/${input.companyId}/products/${parsedInput.data.id}/edit`);
   return { success: true };
+}
+
+function isUniqueConstraintError(error: unknown): error is Prisma.PrismaClientKnownRequestError {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
 }
 
 function parseProductUpdateInput(input: unknown) {
