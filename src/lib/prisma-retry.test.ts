@@ -15,11 +15,13 @@ describe("withSerializableRetry", () => {
     expect(calls).toBe(3);
   });
 
-  it("does not retry other errors", async () => {
+  it("does not retry business rule errors", async () => {
     let calls = 0;
     await expect(withSerializableRetry(async () => {
       calls += 1;
-      throw new Error("business rule");
+      const error = new Error("business rule");
+      Object.assign(error, { code: "NEGATIVE_STOCK" });
+      throw error;
     }, { baseDelayMs: 0 })).rejects.toThrow("business rule");
     expect(calls).toBe(1);
   });
