@@ -8,6 +8,8 @@ export const envSchema = z.object({
   NEON_AUTH_JWKS_URL: z.url().optional(),
   NEON_BRANCH: z.string().min(1).optional(),
   NEXT_PUBLIC_APP_URL: z.url(),
+  UPSTASH_REDIS_REST_URL: z.url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

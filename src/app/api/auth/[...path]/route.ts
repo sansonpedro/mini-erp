@@ -13,7 +13,7 @@ async function protect(
     return Response.json({ error: "Request body is too large." }, { status: 413 });
   }
 
-  const result = rateLimit(request, { namespace: "auth", limit: 60, windowMs: 60_000 });
+  const result = await rateLimit(request, { namespace: "auth", limit: 60, windowMs: 60_000 });
   if (!result.allowed) {
     return tooManyRequests(result.retryAfter);
   }

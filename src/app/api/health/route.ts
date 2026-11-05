@@ -4,7 +4,7 @@ import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const result = rateLimit(request, {
+  const result = await rateLimit(request, {
     namespace: "health",
     limit: 30,
     windowMs: 60_000,
