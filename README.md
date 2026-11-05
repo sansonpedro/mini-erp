@@ -49,7 +49,7 @@ The working flow currently covers authentication, company setup, product managem
 - **Feature-based folders.** Code lives next to the feature that uses it, with a small `lib/` for shared setup. There are no generic `core` or `shared` folders.
 - **One schema per form.** The same Zod schema validates form input in the browser and in server actions.
 
-Longer notes are in [`docs/decisions/`](docs/decisions/), with the working plan in [`docs/PLAN.md`](docs/PLAN.md) and handoff notes in [`docs/HANDOFF.md`](docs/HANDOFF.md).
+Longer notes are in [`docs/decisions/`](docs/decisions/), with the project plan in [`docs/PLAN.md`](docs/PLAN.md) and current status in [`docs/PROJECT-STATUS.md`](docs/PROJECT-STATUS.md).
 
 ## Routes available
 

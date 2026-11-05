@@ -1,6 +1,8 @@
 # PLAN.md
 
-Working plan for the Mini WMS. Agents and humans should read this before writing code.
+# Project plan
+
+Plan for the Mini ERP portfolio project.
 
 ## 1. Goal
 
@@ -119,10 +121,10 @@ CRUD with Zod + React Hook Form, list with search.
 **Phase 3: Stock**
 Entries and adjustments, movement history, current stock.
 
-**Phase 4: Sales**
+**Phase 4: Sales** complete
 Sale form with multiple items, transaction logic, stock check. Unit tests for the stock rules.
 
-**Phase 5: Dashboard and seed**
+**Phase 5: Dashboard and seed** complete
 Daily sales, low stock list, latest movements. Demo data script.
 
 **Phase 6: Deploy**
@@ -130,12 +132,6 @@ Vercel + Neon, environment variables, migrations on deploy.
 
 **Phase 7: Polish**
 Playwright tests for the main flows, screenshots, README with live link.
-
-Rough timeline (target: live demo by Nov 16):
-
-- Week 1: phases 0 to 2
-- Week 2: phases 3 and 4
-- Week 3: phases 5 to 7
 
 ## 7. Working agreements
 
@@ -150,6 +146,7 @@ Rough timeline (target: live demo by Nov 16):
 
 - A new user can sign up, create a company, add a product, add stock and register a sale
 - A sale with not enough stock is rejected with a clear message
-- Two companies never see each other's data (covered by a test)
-- CI is green and the app is live on Vercel + Neon
+- Two companies never see each other's data
+- CI is green
+- The app is deployed on Vercel + Neon
 - README has setup steps, screenshots and the live link
