@@ -110,12 +110,9 @@ erDiagram
 
 ## Screenshots
 
-Screenshots are placeholders in [`docs/screenshots/`](docs/screenshots/). Add these files after the deployed environment is available:
+Screenshots will be added after the deployed environment is available. The placeholder directory is [`docs/screenshots/`](docs/screenshots/).
 
-- `docs/screenshots/dashboard.png`
-- `docs/screenshots/products.png`
-- `docs/screenshots/stock.png`
-- `docs/screenshots/sales.png`
+<!-- Add dashboard, products, stock and sales screenshots here after deployment. -->
 
 ## Routes available
 
