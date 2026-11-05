@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mini WMS",
-  description: "A focused warehouse management system for small businesses",
+  title: "Mini ERP",
+  description: "A focused inventory and sales system for small businesses",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

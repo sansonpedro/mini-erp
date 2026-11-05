@@ -1,12 +1,10 @@
-# PLAN.md
-
-# Project plan
+# Mini ERP project plan
 
 Plan for the Mini ERP portfolio project.
 
 ## 1. Goal
 
-A multi-tenant warehouse management system for small businesses. A company signs up, registers products, receives stock and records outbound sales. Stock updates automatically with every sale.
+A multi-tenant inventory and sales system for small businesses. A company signs up, registers products, receives stock and records outbound sales. Stock updates automatically with every sale.
 
 This is a portfolio project. The goal is a small product that works end to end, is deployed, and has code and decisions I can explain in an interview.
 

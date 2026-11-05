@@ -1,8 +1,8 @@
-# Mini WMS
+# Mini ERP
 
-Multi-tenant warehouse management system for small businesses. The project is intentionally focused on the operational core of a WMS: companies, products, stock and movement history in one workspace.
+Multi-tenant inventory and sales system for small businesses. The project focuses on companies, products, stock and sales in one workspace.
 
-> Status: foundation in development. Live demo: _coming soon_
+> Status: MVP funcional. Live demo: `https://replace-with-live-demo.example.com`
 
 ## Current progress
 
@@ -21,7 +21,7 @@ The working flow currently covers authentication, company setup, product managem
 - Recent movement history scoped to the active company.
 - Sales with transactional stock validation and automatic outbound movements.
 - Dashboard with sales-of-the-day, low-stock and latest-movement metrics.
-- Seed/demo data through `pnpm prisma db seed` (set `DEMO_USER_ID` to attach it to a user).
+- Seed/demo data through `pnpm prisma db seed`.
 - Security baseline: typed environment validation, request rate limiting for auth/health surfaces, HTTPS redirect and security headers in production.
 - Automated Vitest checks and GitHub Actions CI for lint, typecheck, tests, build and dependency audit.
 
@@ -29,6 +29,10 @@ The working flow currently covers authentication, company setup, product managem
 
 - Playwright end-to-end flows and screenshots.
 - Settings, roles, audit log, reports/export and observability dashboards.
+
+## Tests
+
+The default Vitest suite covers validation schemas, serializable retry behavior, negative stock adjustments, invalid and valid sales, and company isolation. A separate PostgreSQL integration job tests two concurrent sales against the same stock item.
 
 ## Tech stack
 
@@ -49,7 +53,69 @@ The working flow currently covers authentication, company setup, product managem
 - **Feature-based folders.** Code lives next to the feature that uses it, with a small `lib/` for shared setup. There are no generic `core` or `shared` folders.
 - **One schema per form.** The same Zod schema validates form input in the browser and in server actions.
 
-Longer notes are in [`docs/decisions/`](docs/decisions/), with the project plan in [`docs/PLAN.md`](docs/PLAN.md) and current status in [`docs/PROJECT-STATUS.md`](docs/PROJECT-STATUS.md).
+Longer notes are in [`docs/decisions/`](docs/decisions/), with the project plan in [`docs/PLAN.md`](docs/PLAN.md) and current status in [`docs/PROJECT-STATUS.md`](docs/PROJECT-STATUS.md). Portuguese summary: [`README.pt-BR.md`](README.pt-BR.md).
+
+## Entity relationship diagram
+
+```mermaid
+erDiagram
+    COMPANY ||--o{ COMPANY_MEMBER : has
+    COMPANY ||--o{ PRODUCT : owns
+    COMPANY ||--o{ STOCK_MOVEMENT : records
+    COMPANY ||--o{ SALE : records
+    SALE ||--|{ SALE_ITEM : contains
+    PRODUCT ||--o{ SALE_ITEM : sold
+    PRODUCT ||--o{ STOCK_MOVEMENT : changes
+
+    COMPANY {
+        string id PK
+        string name
+        datetime createdAt
+    }
+    COMPANY_MEMBER {
+        string id PK
+        string companyId FK
+        string userId
+    }
+    PRODUCT {
+        string id PK
+        string companyId FK
+        string sku
+        int priceInCents
+        int minStock
+        boolean active
+    }
+    STOCK_MOVEMENT {
+        string id PK
+        string companyId FK
+        string productId FK
+        string saleId FK
+        int quantity
+        string type
+    }
+    SALE {
+        string id PK
+        string companyId FK
+        int totalInCents
+        datetime createdAt
+    }
+    SALE_ITEM {
+        string id PK
+        string saleId FK
+        string productId FK
+        int quantity
+        int unitPriceInCents
+    }
+```
+
+## Screenshots
+
+Screenshots are placeholders in [`docs/screenshots/`](docs/screenshots/). Add these files after the deployed environment is available:
+
+- `docs/screenshots/dashboard.png`
+- `docs/screenshots/products.png`
+- `docs/screenshots/stock.png`
+- `docs/screenshots/sales.png`
 
 ## Routes available
 
@@ -84,7 +150,7 @@ Requirements: Node.js 24+, pnpm 11 and PostgreSQL. The database can run locally 
 
 ```bash
 git clone <repo-url>
-cd mini-wms
+cd mini-erp
 cp .env.example .env   # set DATABASE_URL and Neon Auth values
 docker compose up -d   # optional, for local PostgreSQL
 pnpm install
@@ -92,7 +158,7 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-Open `http://localhost:3000`, sign up, create a company, add products and record stock movements. Database changes are versioned in `prisma/migrations`; use `pnpm prisma migrate deploy` for a hosted database.
+Open `http://localhost:3000`, sign up, create a company, add products, record stock movements and register a sale. Database changes are versioned in `prisma/migrations`; use `pnpm prisma migrate deploy` for a hosted database.
 
 ## Scripts
 
@@ -106,6 +172,7 @@ Open `http://localhost:3000`, sign up, create a company, add products and record
 | `pnpm test` | Run Vitest once |
 | `pnpm test:watch` | Run Vitest in watch mode |
 | `pnpm prisma:generate` | Regenerate Prisma Client |
+| `pnpm test:integration` | Run the PostgreSQL concurrency suite |
 
 ## Roadmap
 
@@ -115,9 +182,12 @@ Open `http://localhost:3000`, sign up, create a company, add products and record
 - [x] Phase 3 — manual stock ledger and movement history
 - [x] Phase 4 — sales with stock validation and automatic outbound movements
 - [x] Phase 5 — sales-aware dashboard and seed data
-- [ ] Phase 6 — deployment to Vercel and Neon
-- [ ] Phase 7 — Playwright flows, screenshots and final polish
-- [ ] Phase 8 — accounts payable/receivable, reports, roles, audit log and OpenTelemetry
+- [ ] Phase 6: deployment to Vercel and Neon
+- [ ] Phase 7: Playwright flows, screenshots and final polish
+
+## Future ideas
+
+Settings, roles, audit log, reports, exports and observability can be considered after the portfolio MVP is deployed.
 
 ## Author
 
