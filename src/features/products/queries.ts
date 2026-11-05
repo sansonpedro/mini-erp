@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
+import type { CompanyAccess } from "@/features/company/get-company-access";
 
-export async function getProducts(companyId: string, search?: string) {
+export async function getProducts(access: CompanyAccess, search?: string) {
   const normalizedSearch = search?.trim();
+  const companyId = access.company.id;
 
   return prisma.product.findMany({
     where: {
@@ -20,8 +22,8 @@ export async function getProducts(companyId: string, search?: string) {
   });
 }
 
-export async function getProductById(companyId: string, id: string) {
+export async function getProductById(access: CompanyAccess, id: string) {
   return prisma.product.findFirst({
-    where: { id, companyId, active: true },
+    where: { id, companyId: access.company.id, active: true },
   });
 }

@@ -10,15 +10,15 @@ export const dynamic = "force-dynamic";
 
 export default async function AppPage({ params }: { params: Promise<{ companyId: string }> }) {
   const { companyId } = await params;
-  const { company } = await getCompanyAccess(companyId);
-  const dashboard = await getDashboardData(companyId);
+  const access = await getCompanyAccess(companyId);
+  const dashboard = await getDashboardData(access);
 
   return (
     <main className="flex-1 bg-muted/30 p-6">
       <div className="mx-auto max-w-6xl space-y-6">
         <div>
           <p className="text-sm text-muted-foreground">Overview</p>
-          <h1 className="text-2xl font-semibold tracking-tight">Welcome to {company.name}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Welcome to {access.company.name}</h1>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <MetricCard label="Active products" value={dashboard.activeProducts} />

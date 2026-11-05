@@ -3,6 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
 
+export type CompanyAccess = Awaited<ReturnType<typeof getCompanyAccess>>;
+
 export async function getCompanyAccess(companyId: string) {
   const { data: session } = await auth.getSession();
 

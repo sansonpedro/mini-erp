@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic";
 
 export default async function EditProductPage({ params }: { params: Promise<{ companyId: string; id: string }> }) {
   const { companyId, id } = await params;
-  await getCompanyAccess(companyId);
-  const product = await getProductById(companyId, id);
+  const access = await getCompanyAccess(companyId);
+  const product = await getProductById(access, id);
   if (!product) notFound();
 
   return (

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import type { CompanyAccess } from "@/features/company/get-company-access";
 
-export async function getStockOverview(companyId: string) {
+export async function getStockOverview(access: CompanyAccess) {
+  const companyId = access.company.id;
   const products = await prisma.product.findMany({
     where: { companyId, active: true },
     orderBy: { name: "asc" },
@@ -20,9 +22,9 @@ export async function getStockOverview(companyId: string) {
   }));
 }
 
-export async function getStockMovements(companyId: string) {
+export async function getStockMovements(access: CompanyAccess) {
   return prisma.stockMovement.findMany({
-    where: { companyId },
+    where: { companyId: access.company.id },
     orderBy: { createdAt: "desc" },
     take: 50,
     include: { product: { select: { name: true, sku: true } } },

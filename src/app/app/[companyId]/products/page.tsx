@@ -9,10 +9,10 @@ export const dynamic = "force-dynamic";
 
 export default async function ProductsPage({ params, searchParams }: { params: Promise<{ companyId: string }>; searchParams: Promise<{ q?: string }> }) {
   const { companyId } = await params;
-  await getCompanyAccess(companyId);
+  const access = await getCompanyAccess(companyId);
 
   const query = await searchParams;
-  const products = await getProducts(companyId, query.q);
+  const products = await getProducts(access, query.q);
 
   return (
     <main className="min-h-screen bg-muted/30 px-6 py-12">

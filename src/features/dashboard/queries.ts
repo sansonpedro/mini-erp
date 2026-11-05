@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import type { CompanyAccess } from "@/features/company/get-company-access";
 
-export async function getDashboardData(companyId: string) {
+export async function getDashboardData(access: CompanyAccess) {
+  const companyId = access.company.id;
   const [activeProducts, inactiveProducts, totalProducts, recentProducts, stockProducts, salesSummary, totalSales, recentMovements] = await Promise.all([
     prisma.product.count({ where: { companyId, active: true } }),
     prisma.product.count({ where: { companyId, active: false } }),

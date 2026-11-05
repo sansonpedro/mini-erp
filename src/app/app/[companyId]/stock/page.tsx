@@ -8,8 +8,8 @@ export const dynamic = "force-dynamic";
 
 export default async function StockPage({ params }: { params: Promise<{ companyId: string }> }) {
   const { companyId } = await params;
-  await getCompanyAccess(companyId);
-  const [products, movements] = await Promise.all([getStockOverview(companyId), getStockMovements(companyId)]);
+  const access = await getCompanyAccess(companyId);
+  const [products, movements] = await Promise.all([getStockOverview(access), getStockMovements(access)]);
 
   return (
     <main className="min-h-screen bg-muted/30 px-6 py-12">

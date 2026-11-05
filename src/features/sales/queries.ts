@@ -1,20 +1,11 @@
 import { prisma } from "@/lib/prisma";
+import type { CompanyAccess } from "@/features/company/get-company-access";
 
-export async function getSales(companyId: string) {
+export async function getSales(access: CompanyAccess) {
   return prisma.sale.findMany({
-    where: { companyId },
+    where: { companyId: access.company.id },
     orderBy: { createdAt: "desc" },
     take: 50,
     include: { items: { include: { product: { select: { name: true, sku: true } } } } },
   });
-}
-
-export async function getSalesSummary(companyId: string) {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  const [today, total] = await Promise.all([
-    prisma.sale.aggregate({ where: { companyId, createdAt: { gte: start } }, _sum: { totalInCents: true }, _count: { _all: true } }),
-    prisma.sale.count({ where: { companyId } }),
-  ]);
-  return { todayInCents: today._sum.totalInCents ?? 0, todayCount: today._count._all, total };
 }
