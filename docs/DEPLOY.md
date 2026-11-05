@@ -61,7 +61,7 @@ The seed is idempotent for the demo company and catalog. It resets the demo comp
 - Security headers are configured for all responses.
 - HSTS is added only when `NODE_ENV=production`.
 - HTTP to HTTPS redirect is enabled only in production when the proxy reports `x-forwarded-proto: http`.
-- With Upstash variables present, auth and health rate limits are shared across serverless instances. Without them, the fallback is process-local.
+- With Upstash variables present, auth and health rate limits are shared across serverless instances. In production without them, the app logs a clear warning and uses the process-local fallback. Development and tests keep the fallback silent.
 
 ## Post-deploy smoke test
 
