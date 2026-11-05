@@ -19,6 +19,6 @@ export async function getDashboardData(companyId: string) {
     prisma.stockMovement.findMany({ where: { companyId }, orderBy: { createdAt: "desc" }, take: 5, include: { product: { select: { name: true } } } }),
   ]);
 
-  const lowStockProducts = stockProducts.filter((product) => product.stockMovements.reduce((sum, movement) => sum + movement.quantity, 0) <= product.minStock).map(({ stockMovements, ...product }) => product);
+  const lowStockProducts = stockProducts.filter((product) => product.stockMovements.reduce((sum, movement) => sum + movement.quantity, 0) <= product.minStock).map((product) => ({ id: product.id, name: product.name, sku: product.sku, minStock: product.minStock }));
   return { activeProducts, inactiveProducts, totalProducts, recentProducts, lowStockProducts, recentMovements, todaySalesInCents: salesSummary._sum.totalInCents ?? 0, todaySalesCount: salesSummary._count._all, totalSales };
 }

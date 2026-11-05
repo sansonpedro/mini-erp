@@ -6,6 +6,7 @@ import { getCompanyAccess } from "@/features/company/get-company-access";
 import { mergeSaleItems, hasEnoughStock } from "@/features/sales/rules";
 import { saleSchema } from "@/features/sales/schemas";
 import { prisma } from "@/lib/prisma";
+import { withSerializableRetry } from "@/lib/prisma-retry";
 
 type ActionResult = { error?: string; success?: true };
 
@@ -17,7 +18,7 @@ export async function createSaleAction(input: { companyId: string; sale: unknown
   const items = mergeSaleItems(validation.data.items);
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await withSerializableRetry(() => prisma.$transaction(async (tx) => {
       const products = await tx.product.findMany({
         where: { companyId: access.company.id, active: true, id: { in: items.map((item) => item.productId) } },
         select: { id: true, priceInCents: true, name: true },
@@ -52,7 +53,7 @@ export async function createSaleAction(input: { companyId: string; sale: unknown
       await tx.stockMovement.createMany({
         data: items.map((item) => ({ companyId: access.company.id, productId: item.productId, quantity: -item.quantity, type: "SALE" as const, saleId: sale.id })),
       });
-    }, { isolationLevel: "Serializable" });
+    }, { isolationLevel: "Serializable" }));
   } catch (error) {
     if (error instanceof Error && error.message === "PRODUCT_NOT_FOUND") return { error: "One or more products are unavailable." };
     if (error instanceof Error && error.message.startsWith("INSUFFICIENT_STOCK:")) return { error: `${error.message.slice("INSUFFICIENT_STOCK:".length)} does not have enough stock.` };

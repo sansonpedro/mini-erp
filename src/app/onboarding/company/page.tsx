@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 
 import { CompanyForm } from "@/features/auth/components/company-form";
 import { auth } from "@/lib/auth/server";
-import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 

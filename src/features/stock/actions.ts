@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getCompanyAccess } from "@/features/company/get-company-access";
 import { stockMovementSchema } from "@/features/stock/schemas";
 import { prisma } from "@/lib/prisma";
+import { withSerializableRetry } from "@/lib/prisma-retry";
 
 type ActionResult = { error?: string; success?: true };
 
@@ -22,7 +23,7 @@ export async function createStockMovementAction(input: { companyId: string; move
   if (!product) return { error: "Product not found." };
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await withSerializableRetry(() => prisma.$transaction(async (tx) => {
       if (validation.data.type === "ADJUSTMENT" && validation.data.quantity < 0) {
         const stock = await tx.stockMovement.aggregate({
           where: { companyId: access.company.id, productId: product.id },
@@ -43,7 +44,7 @@ export async function createStockMovementAction(input: { companyId: string; move
           note: validation.data.note || null,
         },
       });
-    }, { isolationLevel: "Serializable" });
+    }, { isolationLevel: "Serializable" }));
   } catch (error) {
     if (error instanceof Error && error.message === "NEGATIVE_STOCK") {
       return { error: "The adjustment cannot make stock negative." };
