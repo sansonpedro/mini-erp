@@ -8,6 +8,8 @@
 - Copy the direct connection string to `DATABASE_URL_UNPOOLED`.
 - Keep `sslmode=verify-full` in both connection strings.
 
+For local Docker users upgrading from the old project name, the database and volume names changed from `mini_wms` and `postgres_data` to `mini_erp` and `mini_erp_postgres_data`. Recreate the local volume with `docker compose down -v` before starting the new setup.
+
 ## Environment variables
 
 Set these variables in Vercel. Do not commit their values:

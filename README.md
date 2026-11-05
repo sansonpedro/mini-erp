@@ -158,6 +158,8 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
+The local Docker database and volume are named `mini_erp`. If you used the previous `mini_wms` setup, recreate the local volume with `docker compose down -v` before starting again.
+
 Open `http://localhost:3000`, sign up, create a company, add products, record stock movements and register a sale. Database changes are versioned in `prisma/migrations`; use `pnpm prisma migrate deploy` for a hosted database.
 
 ## Scripts

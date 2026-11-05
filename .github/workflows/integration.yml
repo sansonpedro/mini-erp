@@ -12,13 +12,13 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: miniwms
-          POSTGRES_PASSWORD: miniwms_password
-          POSTGRES_DB: mini_wms
+          POSTGRES_USER: minierp
+          POSTGRES_PASSWORD: minierp_password
+          POSTGRES_DB: mini_erp
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U miniwms -d mini_wms"
+          --health-cmd "pg_isready -U minierp -d mini_erp"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -39,9 +39,9 @@ jobs:
       - name: Apply migrations
         run: pnpm prisma migrate deploy
         env:
-          DATABASE_URL: postgresql://miniwms:miniwms_password@localhost:5432/mini_wms?sslmode=disable
-          DATABASE_URL_UNPOOLED: postgresql://miniwms:miniwms_password@localhost:5432/mini_wms?sslmode=disable
+          DATABASE_URL: postgresql://minierp:minierp_password@localhost:5432/mini_erp?sslmode=disable
+          DATABASE_URL_UNPOOLED: postgresql://minierp:minierp_password@localhost:5432/mini_erp?sslmode=disable
       - name: Run integration tests
         run: pnpm test:integration
         env:
-          DATABASE_URL_TEST: postgresql://miniwms:miniwms_password@localhost:5432/mini_wms?sslmode=disable
+          DATABASE_URL_TEST: postgresql://minierp:minierp_password@localhost:5432/mini_erp?sslmode=disable

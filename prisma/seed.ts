@@ -8,7 +8,7 @@ const authBaseUrl = process.env.NEON_AUTH_BASE_URL;
 if (!connectionString || !authBaseUrl) throw new Error("DATABASE_URL and NEON_AUTH_BASE_URL are required to seed the database.");
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
-const companyId = "cmjminiWmsDemoCompany000001";
+const companyId = "cmjminiErpDemoCompany000001";
 const demoEmail = process.env.DEMO_USER_EMAIL ?? "demo@mini-erp.local";
 const demoPassword = process.env.DEMO_USER_PASSWORD ?? "";
 if (!demoPassword) throw new Error("DEMO_USER_PASSWORD is required to seed the demo account.");
