@@ -2,7 +2,7 @@
 
 Multi-tenant inventory and sales system for small businesses. The project focuses on companies, products, stock and sales in one workspace.
 
-> Status: MVP funcional. Live demo: `https://replace-with-live-demo.example.com`
+> Status: MVP funcional. Live demo: <!-- DEMO_URL --> preencher após o deploy.
 
 ## Current progress
 
@@ -33,6 +33,8 @@ The working flow currently covers authentication, company setup, product managem
 ## Tests
 
 The default Vitest suite covers validation schemas, serializable retry behavior, negative stock adjustments, invalid and valid sales, and company isolation. A separate PostgreSQL integration job tests two concurrent sales against the same stock item.
+
+Demo access uses the email configured in `DEMO_USER_EMAIL`. The password stays only in the deployment environment and is not published in this repository.
 
 ## Tech stack
 

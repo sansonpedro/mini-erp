@@ -1,5 +1,7 @@
 # Mini ERP
 
+Live demo: <!-- DEMO_URL --> preencher após o deploy.
+
 O Mini ERP é um sistema multiempresa de estoque e vendas para pequenos negócios. O MVP cobre cadastro de produtos, entradas e ajustes de estoque, vendas com baixa transacional e um dashboard operacional.
 
 ## Stack
@@ -25,5 +27,7 @@ pnpm dev
 ```
 
 Para dados de demonstração, configure `DEMO_USER_EMAIL` e `DEMO_USER_PASSWORD` e rode `pnpm prisma db seed`.
+
+Para acessar a conta demo, use o email configurado em `DEMO_USER_EMAIL`. A senha fica apenas no ambiente de deploy e não é publicada neste repositório.
 
 Veja a documentação completa em [`README.md`](README.md) e o checklist de deploy em [`docs/DEPLOY.md`](docs/DEPLOY.md).
