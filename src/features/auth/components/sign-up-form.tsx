@@ -52,7 +52,8 @@ export function SignUpForm() {
 
       router.push("/onboarding/company");
       router.refresh();
-    } catch {
+    } catch (error) {
+      console.error("Sign-up request failed", error);
       setAuthError("We could not create your account. Please try again.");
     } finally {
       setIsSubmitting(false);

@@ -48,7 +48,8 @@ export function LoginForm() {
 
       router.push("/workspaces");
       router.refresh();
-    } catch {
+    } catch (error) {
+      console.error("Sign-in request failed", error);
       setAuthError("We could not sign you in. Please try again.");
     } finally {
       setIsSubmitting(false);

@@ -14,7 +14,8 @@ export async function GET(request: Request) {
   try {
     await prisma.$queryRaw`SELECT 1`;
     return Response.json({ database: "ok" }, { headers: { "Cache-Control": "no-store" } });
-  } catch {
+  } catch (error) {
+    console.error("Health check database query failed", error);
     return Response.json(
       { database: "error" },
       { status: 503, headers: { "Cache-Control": "no-store" } },
