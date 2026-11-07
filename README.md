@@ -2,7 +2,7 @@
 
 Multi-tenant inventory and sales system for small businesses. The project focuses on companies, products, stock and sales in one workspace.
 
-> Status: MVP funcional. Live demo: <!-- DEMO_URL --> preencher após o deploy.
+> Status: MVP funcional (rodando local). Live demo will be added after deployment.
 
 ## Current progress
 
