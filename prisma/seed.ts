@@ -18,12 +18,13 @@ async function getDemoUserId() {
   const authConfig = { fetchOptions: { headers: { Origin: appUrl! } } } as never;
   const auth = createAuthClient(authBaseUrl!, authConfig);
   const credentials = { email: demoEmail, password: demoPassword, name: "Demo User" };
+  const signIn = await auth.signIn.email({ email: demoEmail, password: demoPassword });
+  if (!signIn.error && signIn.data?.user.id) return signIn.data.user.id;
+
   const signUp = await auth.signUp.email(credentials);
   if (!signUp.error && signUp.data?.user.id) return signUp.data.user.id;
 
-  const signIn = await auth.signIn.email({ email: demoEmail, password: demoPassword });
-  if (signIn.error || !signIn.data?.user.id) throw new Error(signIn.error?.message ?? "Could not create or sign in the demo user.");
-  return signIn.data.user.id;
+  throw new Error(signUp.error?.message ?? signIn.error?.message ?? "Could not create or sign in the demo user.");
 }
 
 async function main() {
