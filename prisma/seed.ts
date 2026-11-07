@@ -39,7 +39,6 @@ async function main() {
   await prisma.stockMovement.deleteMany({ where: { companyId: company.id } });
   await prisma.saleItem.deleteMany({ where: { sale: { companyId: company.id } } });
   await prisma.sale.deleteMany({ where: { companyId: company.id } });
-  await prisma.product.deleteMany({ where: { companyId: company.id } });
   await prisma.stockMovement.createMany({ data: saved.map((product, index) => ({ companyId: company.id, productId: product.id, quantity: [45, 24, 60][index]!, type: "ENTRY" as const, note: "Initial demo stock" })) });
   const sale = await prisma.sale.create({ data: { companyId: company.id, totalInCents: saved[0]!.priceInCents * 3, items: { create: { productId: saved[0]!.id, quantity: 3, unitPriceInCents: saved[0]!.priceInCents } } }, select: { id: true } });
   await prisma.stockMovement.create({ data: { companyId: company.id, productId: saved[0]!.id, quantity: -3, type: "SALE", saleId: sale.id, note: "Demo sale" } });
