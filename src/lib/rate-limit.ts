@@ -1,5 +1,6 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { headers } from "next/headers";
 
 type RateLimitOptions = {
   limit: number;
@@ -64,6 +65,22 @@ export async function rateLimit(request: Request, options: RateLimitOptions) {
 
   current.count += 1;
   return { allowed: true, retryAfter: 0 };
+}
+
+export async function rateLimitAction(userId: string | undefined, options: RateLimitOptions) {
+  let identity = userId ? `user:${userId}` : "ip:unknown";
+  if (!userId) {
+    const requestHeaders = await headers();
+    const forwardedFor = requestHeaders.get("x-forwarded-for");
+    const ip = forwardedFor?.split(",")[0]?.trim() || requestHeaders.get("x-real-ip") || "unknown";
+    identity = `ip:${ip}`;
+  }
+  const limiter = getUpstashLimiter(options);
+  if (limiter) {
+    const result = await limiter.limit(`${options.namespace}:${identity}`);
+    return { allowed: result.success, retryAfter: result.success ? 0 : Math.max(1, Math.ceil((result.reset - Date.now()) / 1000)) };
+  }
+  return rateLimitIdentity(identity, options);
 }
 
 export function rateLimitIdentity(identity: string, options: RateLimitOptions) {

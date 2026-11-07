@@ -7,6 +7,7 @@ import { saleSchema } from "@/features/sales/schemas";
 import { prisma } from "@/lib/prisma";
 import { createSaleTransaction } from "@/features/sales/transactions";
 import { ProductNotFoundError, InsufficientStockError, SaleTotalOverflowError } from "@/features/sales/errors";
+import { rateLimitAction } from "@/lib/rate-limit";
 
 type ActionResult = { error?: string; success?: true };
 
@@ -15,6 +16,9 @@ export async function createSaleAction(input: { companyId: string; sale: unknown
   if (!validation.success) return { error: validation.error.issues[0]?.message ?? "Enter valid sale details." };
 
   const access = await getCompanyAccess(input.companyId);
+  if (!(await rateLimitAction(access.user.id, { namespace: "sales", limit: 30, windowMs: 60_000 })).allowed) {
+    return { error: "Too many sales attempts. Please try again later." };
+  }
 
   try {
     await createSaleTransaction(prisma, access.company.id, validation.data.items);

@@ -7,11 +7,13 @@ const mocks = vi.hoisted(() => ({
   saleCreate: vi.fn(),
   movementCreateMany: vi.fn(),
   transaction: vi.fn(),
+  rateLimitAction: vi.fn(),
 }));
 
 vi.mock("@/features/company/get-company-access", () => ({ getCompanyAccess: mocks.getCompanyAccess }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/prisma", () => ({ prisma: { $transaction: mocks.transaction } }));
+vi.mock("@/lib/rate-limit", () => ({ rateLimitAction: mocks.rateLimitAction }));
 
 import { createSaleAction } from "@/features/sales/actions";
 
@@ -20,6 +22,7 @@ const productId = "cmj4p9gq0000001l5d2x4c3aa";
 describe("createSaleAction", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.rateLimitAction.mockResolvedValue({ allowed: true, retryAfter: 0 });
     mocks.getCompanyAccess.mockResolvedValue({ user: { id: "user-a" }, company: { id: "company-a", name: "A" } });
     mocks.transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => callback({
       product: { findMany: mocks.findMany },
@@ -48,5 +51,14 @@ describe("createSaleAction", () => {
     expect(result).toEqual({ success: true });
     expect(mocks.saleCreate).toHaveBeenCalledOnce();
     expect(mocks.movementCreateMany).toHaveBeenCalledWith({ data: [{ companyId: "company-a", productId, quantity: -2, type: "SALE", saleId: "sale-a" }] });
+  });
+
+  it("rejects the sale when the action rate limit is exceeded", async () => {
+    mocks.rateLimitAction.mockResolvedValue({ allowed: false, retryAfter: 10 });
+
+    const result = await createSaleAction({ companyId: "company-a", sale: { items: [{ productId, quantity: 1 }] } });
+
+    expect(result).toEqual({ error: "Too many sales attempts. Please try again later." });
+    expect(mocks.transaction).not.toHaveBeenCalled();
   });
 });

@@ -6,6 +6,7 @@ import { productIdSchema, productSchema } from "@/features/products/schemas";
 import { getCompanyAccess } from "@/features/company/get-company-access";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
+import { rateLimitAction } from "@/lib/rate-limit";
 
 type ActionResult = { error?: string; success?: true };
 
@@ -16,6 +17,9 @@ export async function createProductAction(input: { companyId: string; product: u
   }
 
   const access = await getCompanyAccess(input.companyId);
+  if (!(await rateLimitAction(access.user.id, { namespace: "products", limit: 60, windowMs: 60_000 })).allowed) {
+    return { error: "Too many product attempts. Please try again later." };
+  }
 
   try {
     await prisma.product.create({ data: { ...validation.data, companyId: access.company.id } });
@@ -33,7 +37,10 @@ export async function updateProductAction(input: { companyId: string; id: unknow
   const parsedInput = parseProductUpdateInput(input);
   if (!parsedInput.success) return { error: parsedInput.error };
 
-  await getCompanyAccess(input.companyId);
+  const access = await getCompanyAccess(input.companyId);
+  if (!(await rateLimitAction(access.user.id, { namespace: "products", limit: 60, windowMs: 60_000 })).allowed) {
+    return { error: "Too many product attempts. Please try again later." };
+  }
 
   try {
     const result = await prisma.product.updateMany({
@@ -70,7 +77,10 @@ export async function deactivateProductAction(input: { companyId: string; id: un
   const validation = productIdSchema.safeParse(input);
   if (!validation.success) return { error: "Product not found." };
 
-  await getCompanyAccess(input.companyId);
+  const access = await getCompanyAccess(input.companyId);
+  if (!(await rateLimitAction(access.user.id, { namespace: "products", limit: 60, windowMs: 60_000 })).allowed) {
+    return { error: "Too many product attempts. Please try again later." };
+  }
 
   const result = await prisma.product.updateMany({
     where: { id: validation.data.id, companyId: input.companyId, active: true },

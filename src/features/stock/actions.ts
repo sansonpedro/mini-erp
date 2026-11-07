@@ -7,6 +7,7 @@ import { stockMovementSchema } from "@/features/stock/schemas";
 import { prisma } from "@/lib/prisma";
 import { createStockMovementTransaction } from "@/features/stock/transactions";
 import { NegativeStockError } from "@/features/stock/errors";
+import { rateLimitAction } from "@/lib/rate-limit";
 
 type ActionResult = { error?: string; success?: true };
 
@@ -17,6 +18,9 @@ export async function createStockMovementAction(input: { companyId: string; move
   }
 
   const access = await getCompanyAccess(input.companyId);
+  if (!(await rateLimitAction(access.user.id, { namespace: "stock", limit: 60, windowMs: 60_000 })).allowed) {
+    return { error: "Too many stock attempts. Please try again later." };
+  }
   const product = await prisma.product.findFirst({
     where: { id: validation.data.productId, companyId: access.company.id, active: true },
     select: { id: true },
