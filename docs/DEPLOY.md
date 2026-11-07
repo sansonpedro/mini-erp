@@ -5,7 +5,7 @@
 - Create or select the production Neon project.
 - Configure the Neon Auth application for the production domain.
 - Copy the pooled connection string to `DATABASE_URL`.
-- Copy the direct connection string to `DATABASE_URL_UNPOOLED`.
+- Copy the direct connection string to `DATABASE_URL_UNPOOLED`. This variable is only for Prisma migrations and seed; application runtime uses `DATABASE_URL`.
 - Keep `sslmode=verify-full` in both connection strings.
 - Use the pooled URL for application traffic and the direct URL for Prisma CLI commands and migrations.
 
@@ -16,7 +16,7 @@ For local Docker users upgrading from the old project name, the database and vol
 Set these variables in Vercel. Do not commit their values:
 
 - `DATABASE_URL`
-- `DATABASE_URL_UNPOOLED`
+- `DATABASE_URL_UNPOOLED` for migrations and seed only
 - `NEON_AUTH_BASE_URL`
 - `NEON_AUTH_COOKIE_SECRET`
 - `NEON_AUTH_JWKS_URL` optional
@@ -80,7 +80,7 @@ The seed uses `DATABASE_URL_UNPOOLED` and calls Neon Auth with `NEON_AUTH_BASE_U
 
 1. Create the production project and database in Neon. Copy the pooled connection to `DATABASE_URL`, the direct connection to `DATABASE_URL_UNPOOLED`, the Neon Auth base URL to `NEON_AUTH_BASE_URL`, and generate `NEON_AUTH_COOKIE_SECRET`. Add `NEON_AUTH_JWKS_URL` and `NEON_BRANCH` only if Neon provides or requires them for your project.
 2. Create a Redis database in Upstash and copy its REST URL to `UPSTASH_REDIS_REST_URL` and its REST token to `UPSTASH_REDIS_REST_TOKEN`.
-3. Create the Vercel project from the repository and configure all production variables: `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET`, `NEXT_PUBLIC_APP_URL`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, and optional `NEON_AUTH_JWKS_URL` and `NEON_BRANCH`.
+3. Create the Vercel project from the repository and configure runtime variables: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET`, `NEXT_PUBLIC_APP_URL`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, and optional `NEON_AUTH_JWKS_URL` and `NEON_BRANCH`. Keep `DATABASE_URL_UNPOOLED` only on the trusted machine used for migrations and seed.
 4. From a trusted machine with `DATABASE_URL_UNPOOLED` set to the production direct connection, run `pnpm prisma migrate deploy`.
 5. From the same trusted machine, set `DEMO_USER_EMAIL` and `DEMO_USER_PASSWORD` without committing them, then run `pnpm prisma db seed` against the production database.
 6. Add the final Vercel HTTPS URL to the Neon Auth trusted domains and redirect URLs. Set `NEXT_PUBLIC_APP_URL` to that same URL.
