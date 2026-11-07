@@ -34,9 +34,9 @@ describe.skipIf(!connectionString)("concurrent sales with PostgreSQL", () => {
       expect(finalStock._sum.quantity).toBe(0);
       expect(await prisma.sale.count({ where: { companyId: company.id } })).toBe(1);
     } finally {
+      await prisma.stockMovement.deleteMany({ where: { companyId: company.id } });
       await prisma.saleItem.deleteMany({ where: { sale: { companyId: company.id } } });
       await prisma.sale.deleteMany({ where: { companyId: company.id } });
-      await prisma.stockMovement.deleteMany({ where: { companyId: company.id } });
       await prisma.product.deleteMany({ where: { companyId: company.id } });
       await prisma.company.delete({ where: { id: company.id } });
     }
