@@ -24,4 +24,9 @@ describe("parseEnv", () => {
       }),
     ).toThrow();
   });
+
+  it("rejects a missing auth cookie secret", () => {
+    const missingSecret = { ...validEnv, NEON_AUTH_COOKIE_SECRET: undefined };
+    expect(() => parseEnv(missingSecret)).toThrow();
+  });
 });
