@@ -15,7 +15,7 @@ This is a portfolio project. The goal is a small product that works end to end, 
 | Framework            | Next.js (App Router), TypeScript strict        |
 | UI                   | Tailwind CSS, shadcn/ui, Phosphor Icons        |
 | Forms and validation | React Hook Form + Zod                          |
-| Auth                 | Better Auth                                    |
+| Auth                 | Neon Auth (Managed Better Auth)                |
 | Database             | PostgreSQL                                     |
 | ORM                  | Prisma                                         |
 | Package manager      | pnpm                                           |
@@ -32,7 +32,7 @@ The MVP is the smallest version that works from start to finish.
 **In:**
 
 - Sign up, log in, log out
-- Create a company on first login. A user can belong to one or more companies
+- Create a company on first login. A user can belong to multiple companies
 - Products: create, edit, list, deactivate
 - Stock: manual stock entries and adjustments, current stock per product, movement history
 - Sales: create a sale with items, block it if stock is not enough, stock goes down automatically

@@ -6,7 +6,7 @@ Status: accepted
 ## Implemented
 
 - Environment variables are validated and typed with Zod in `src/lib/env.ts`.
-- Auth endpoints reject oversized request bodies and use a per-IP in-memory rate limit.
+- Auth endpoints reject oversized request bodies and use Upstash Redis rate limiting with a process-local fallback.
 - The health endpoint is rate limited and returns `Cache-Control: no-store`.
 - Production requests forwarded as HTTP are redirected to HTTPS.
 - Production responses receive HSTS, content-type, clickjacking, referrer, and permissions headers.
@@ -21,7 +21,7 @@ The current defense is explicit membership authorization plus `companyId` filter
 
 ## Remaining provider/application controls
 
-- Rate limiting is process-local; a distributed limiter is needed for multiple instances.
+- Upstash Redis should be configured in production; without it, the fallback is process-local and is not shared across instances.
 - Bot protection requires a provider decision for the managed auth UI.
 - Upload restrictions, richer API response limits, and CSP can be added when those surfaces exist.
 - Dependency audit currently reports only low and moderate findings documented in `docs/dependency-exceptions.md`.

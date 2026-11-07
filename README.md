@@ -40,7 +40,7 @@ Demo access uses the email configured in `DEMO_USER_EMAIL`. The password stays o
 
 - **App:** Next.js 16.4.3 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui, Phosphor Icons
 - **Forms and validation:** React Hook Form + Zod
-- **Auth:** Neon Auth (Managed Better Auth)
+- **Auth:** Neon Auth
 - **Database:** PostgreSQL with Prisma 7
 - **Tests:** Vitest; Playwright planned for the polish phase
 - **Tooling:** pnpm, Docker Compose, GitHub Actions
@@ -139,13 +139,16 @@ src/
   features/            # auth, company, products, stock and dashboard
   components/ui/       # shadcn components
   lib/                 # Prisma, auth, environment, rate limiting and utilities
+  proxy.ts             # request proxy and security headers
+neon.ts                # Neon Auth configuration
 prisma/                # schema and versioned migrations
+tests/                 # integration tests
 docs/                  # plan, handoff, security notes and decisions
 ```
 
 ## Getting started
 
-Requirements: Node.js 24+, pnpm 11 and PostgreSQL. The database can run locally with Docker or be hosted on Neon.
+Requirements: Node.js 24.x, pnpm 11 and PostgreSQL. The database can run locally with Docker or be hosted on Neon.
 
 ```bash
 git clone <repo-url>
@@ -173,6 +176,7 @@ Open `http://localhost:3000`, sign up, create a company, add products, record st
 | `pnpm test` | Run Vitest once |
 | `pnpm test:watch` | Run Vitest in watch mode |
 | `pnpm prisma:generate` | Regenerate Prisma Client |
+| `pnpm prisma db seed` | Seed the local/demo database |
 | `pnpm test:integration` | Run the PostgreSQL concurrency suite |
 
 ## Roadmap

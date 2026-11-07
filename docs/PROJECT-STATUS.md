@@ -24,6 +24,7 @@ Users can belong to multiple companies. The pair `companyId/userId` is unique in
 - Sales with transactional stock validation and outbound movements.
 - Dashboard metrics for sales, low stock and recent movements.
 - Distributed rate limiting through Upstash Redis with a process-local fallback.
+- Neon Auth is the identity provider; users can belong to multiple companies.
 - Seed data for a demo company and catalog.
 
 ## Remaining portfolio work

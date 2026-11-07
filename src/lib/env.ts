@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const envSchema = z.object({
   DATABASE_URL: z.url(),
-  DATABASE_URL_UNPOOLED: z.url(),
+  DATABASE_URL_UNPOOLED: z.url().optional(),
   NEON_AUTH_BASE_URL: z.url(),
   NEON_AUTH_COOKIE_SECRET: z.string().min(32),
   NEON_AUTH_JWKS_URL: z.url().optional(),

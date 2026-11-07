@@ -8,10 +8,11 @@ allowBuilds:
   workerd: false
 minimumReleaseAgeExclude:
   - '@neon/config@1.10.0'
-  - '@neon/env@1.6.8'
   - '@neon/sdk@7.7.0'
 overrides:
+  # Pin Better Auth to the version compatible with the Neon Auth beta.
   '@better-auth/drizzle-adapter': 1.7.7
   better-auth: 1.7.7
+  # Keep lodash and zod aligned with the reviewed security baseline.
   lodash: 4.18.1
   zod: 4.6.7
