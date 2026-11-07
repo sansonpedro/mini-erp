@@ -5,7 +5,8 @@ import { PrismaClient } from "../src/generated/prisma/client";
 
 const connectionString = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
 const authBaseUrl = process.env.NEON_AUTH_BASE_URL;
-if (!connectionString || !authBaseUrl) throw new Error("DATABASE_URL and NEON_AUTH_BASE_URL are required to seed the database.");
+const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+if (!connectionString || !authBaseUrl || !appUrl) throw new Error("DATABASE_URL, NEON_AUTH_BASE_URL and NEXT_PUBLIC_APP_URL are required to seed the database.");
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 const companyId = "cmjminiErpDemoCompany000001";
@@ -15,7 +16,7 @@ if (!demoPassword) throw new Error("DEMO_USER_PASSWORD is required to seed the d
 
 async function getDemoUserId() {
   const auth = createAuthClient(authBaseUrl!);
-  const credentials = { email: demoEmail, password: demoPassword, name: "Demo User" };
+  const credentials = { email: demoEmail, password: demoPassword, name: "Demo User", callbackURL: appUrl };
   const signUp = await auth.signUp.email(credentials);
   if (!signUp.error && signUp.data?.user.id) return signUp.data.user.id;
 
