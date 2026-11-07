@@ -49,6 +49,7 @@ model Product {
   saleItems   SaleItem[]
 
   @@unique([companyId, sku])
+  @@unique([companyId, id])
   @@index([companyId, active])
 }
 
@@ -68,17 +69,20 @@ model Sale {
   stockMovements StockMovement[]
 
   @@index([companyId, createdAt])
+  @@unique([companyId, id])
 }
 
 model SaleItem {
   id               String  @id @default(cuid())
+  companyId        String
   saleId           String
   productId        String
   quantity         Int
   unitPriceInCents Int
-  sale             Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
-  product          Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  sale             Sale    @relation(fields: [companyId, saleId], references: [companyId, id], onDelete: Cascade)
+  product          Product @relation(fields: [companyId, productId], references: [companyId, id], onDelete: Restrict)
 
+  @@index([companyId])
   @@index([saleId])
   @@index([productId])
 }
@@ -93,7 +97,7 @@ model StockMovement {
   saleId    String?
   createdAt DateTime          @default(now())
   company   Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  product   Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product           @relation(fields: [companyId, productId], references: [companyId, id], onDelete: Restrict)
   sale      Sale?             @relation(fields: [saleId], references: [id], onDelete: SetNull)
 
   @@index([companyId, createdAt])
