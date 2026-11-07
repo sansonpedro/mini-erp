@@ -15,8 +15,9 @@ const demoPassword = process.env.DEMO_USER_PASSWORD ?? "";
 if (!demoPassword) throw new Error("DEMO_USER_PASSWORD is required to seed the demo account.");
 
 async function getDemoUserId() {
-  const auth = createAuthClient(authBaseUrl!);
-  const credentials = { email: demoEmail, password: demoPassword, name: "Demo User", callbackURL: appUrl };
+  const authConfig = { fetchOptions: { headers: { Origin: appUrl! } } } as never;
+  const auth = createAuthClient(authBaseUrl!, authConfig);
+  const credentials = { email: demoEmail, password: demoPassword, name: "Demo User" };
   const signUp = await auth.signUp.email(credentials);
   if (!signUp.error && signUp.data?.user.id) return signUp.data.user.id;
 
