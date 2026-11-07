@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { CompanyAccess } from "@/features/company/get-company-access";
+import { startOfTodayInSaoPaulo } from "@/lib/date";
 
 export async function getDashboardData(access: CompanyAccess) {
   const companyId = access.company.id;
@@ -13,14 +14,13 @@ export async function getDashboardData(access: CompanyAccess) {
       take: 5,
       select: { id: true, name: true, sku: true, priceInCents: true, createdAt: true },
     }),
-    prisma.product.findMany({
-      where: { companyId, active: true }, select: { id: true, name: true, sku: true, minStock: true, stockMovements: { select: { quantity: true } } }, orderBy: { name: "asc" },
-    }),
-    prisma.sale.aggregate({ where: { companyId, createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } }, _sum: { totalInCents: true }, _count: { _all: true } }),
+    prisma.product.findMany({ where: { companyId, active: true }, select: { id: true, name: true, sku: true, minStock: true }, orderBy: { name: "asc" } }),
+    prisma.sale.aggregate({ where: { companyId, createdAt: { gte: startOfTodayInSaoPaulo() } }, _sum: { totalInCents: true }, _count: { _all: true } }),
     prisma.sale.count({ where: { companyId } }),
     prisma.stockMovement.findMany({ where: { companyId }, orderBy: { createdAt: "desc" }, take: 5, include: { product: { select: { name: true } } } }),
   ]);
 
-  const lowStockProducts = stockProducts.filter((product) => product.stockMovements.reduce((sum, movement) => sum + movement.quantity, 0) <= product.minStock).map((product) => ({ id: product.id, name: product.name, sku: product.sku, minStock: product.minStock }));
+  const stockTotals = await prisma.stockMovement.groupBy({ by: ["productId"], where: { companyId, productId: { in: stockProducts.map((product) => product.id) } }, _sum: { quantity: true } });
+  const lowStockProducts = stockProducts.filter((product) => (stockTotals.find((total) => total.productId === product.id)?._sum.quantity ?? 0) <= product.minStock).map(({ id, name, sku, minStock }) => ({ id, name, sku, minStock }));
   return { activeProducts, inactiveProducts, totalProducts, recentProducts, lowStockProducts, recentMovements, todaySalesInCents: salesSummary._sum.totalInCents ?? 0, todaySalesCount: salesSummary._count._all, totalSales };
 }

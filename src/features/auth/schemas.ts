@@ -22,7 +22,7 @@ export const loginSchema = z.object({
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
 export const companySchema = z.object({
-  name: z.string().trim().min(2, "Enter your company name."),
+  name: z.string().trim().min(2, "Enter your company name.").max(120, "Company name is too long."),
 });
 
 export type CompanyFormValues = z.infer<typeof companySchema>;

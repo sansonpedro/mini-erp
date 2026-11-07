@@ -66,6 +66,19 @@ export async function rateLimit(request: Request, options: RateLimitOptions) {
   return { allowed: true, retryAfter: 0 };
 }
 
+export function rateLimitIdentity(identity: string, options: RateLimitOptions) {
+  const now = Date.now();
+  const key = `${options.namespace}:${identity}`;
+  const current = buckets.get(key);
+  if (!current || current.resetAt <= now) {
+    buckets.set(key, { count: 1, resetAt: now + options.windowMs });
+    return { allowed: true, retryAfter: 0 };
+  }
+  if (current.count >= options.limit) return { allowed: false, retryAfter: Math.ceil((current.resetAt - now) / 1000) };
+  current.count += 1;
+  return { allowed: true, retryAfter: 0 };
+}
+
 export function isPayloadTooLarge(request: Request, maxBytes: number) {
   const contentLength = request.headers.get("content-length");
   return contentLength ? Number(contentLength) > maxBytes : false;

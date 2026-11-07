@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import { getCompanyAccess } from "@/features/company/get-company-access";
 import { stockMovementSchema } from "@/features/stock/schemas";
 import { prisma } from "@/lib/prisma";
-import { withSerializableRetry } from "@/lib/prisma-retry";
+import { createStockMovementTransaction } from "@/features/stock/transactions";
+import { NegativeStockError } from "@/features/stock/errors";
 
 type ActionResult = { error?: string; success?: true };
 
@@ -23,32 +24,12 @@ export async function createStockMovementAction(input: { companyId: string; move
   if (!product) return { error: "Product not found." };
 
   try {
-    await withSerializableRetry(() => prisma.$transaction(async (tx) => {
-      if (validation.data.type === "ADJUSTMENT" && validation.data.quantity < 0) {
-        const stock = await tx.stockMovement.aggregate({
-          where: { companyId: access.company.id, productId: product.id },
-          _sum: { quantity: true },
-        });
-        const currentStock = stock._sum.quantity ?? 0;
-        if (currentStock + validation.data.quantity < 0) {
-          throw new Error("NEGATIVE_STOCK");
-        }
-      }
-
-      await tx.stockMovement.create({
-        data: {
-          companyId: access.company.id,
-          productId: product.id,
-          quantity: validation.data.quantity,
-          type: validation.data.type,
-          note: validation.data.note || null,
-        },
-      });
-    }, { isolationLevel: "Serializable" }));
+    await createStockMovementTransaction(prisma, access.company.id, product.id, validation.data);
   } catch (error) {
-    if (error instanceof Error && error.message === "NEGATIVE_STOCK") {
+    if (error instanceof NegativeStockError) {
       return { error: "The adjustment cannot make stock negative." };
     }
+    console.error("Failed to create stock movement", error);
     return { error: "We could not record this movement. Please try again." };
   }
 

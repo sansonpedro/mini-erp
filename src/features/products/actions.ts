@@ -21,6 +21,7 @@ export async function createProductAction(input: { companyId: string; product: u
     await prisma.product.create({ data: { ...validation.data, companyId: access.company.id } });
   } catch (error) {
     if (isUniqueConstraintError(error)) return { error: "That SKU is already in use in your company." };
+    console.error("Failed to create product", error);
     return { error: "We could not create the product. Please try again." };
   }
 
@@ -42,6 +43,7 @@ export async function updateProductAction(input: { companyId: string; id: unknow
     if (result.count === 0) return { error: "Product not found." };
   } catch (error) {
     if (isUniqueConstraintError(error)) return { error: "That SKU is already in use in your company." };
+    console.error("Failed to update product", error);
     return { error: "We could not update the product. Please try again." };
   }
 

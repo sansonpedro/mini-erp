@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-import { createCompanyAction } from "@/features/auth/actions";
+import { createCompanyAction } from "@/features/company/actions";
 import { companySchema, type CompanyFormValues } from "@/features/auth/schemas";
 
 export function CompanyForm() {

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { CompanyForm } from "@/features/auth/components/company-form";
+import { CompanyForm } from "@/features/company/components/company-form";
 import { auth } from "@/lib/auth/server";
 
 export const dynamic = "force-dynamic";

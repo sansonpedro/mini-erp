@@ -2,8 +2,9 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
+import { cache } from "react";
 
-export async function getUserCompanies() {
+export const getUserCompanies = cache(async function getUserCompanies() {
   const { data: session } = await auth.getSession();
 
   if (!session?.user) {
@@ -17,4 +18,4 @@ export async function getUserCompanies() {
   });
 
   return { user: session.user, memberships };
-}
+});

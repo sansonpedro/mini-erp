@@ -12,14 +12,10 @@ export async function getStockOverview(access: CompanyAccess) {
       sku: true,
       priceInCents: true,
       minStock: true,
-      stockMovements: { select: { quantity: true } },
     },
   });
-
-  return products.map(({ stockMovements, ...product }) => ({
-    ...product,
-    currentStock: stockMovements.reduce((total, movement) => total + movement.quantity, 0),
-  }));
+  const totals = await prisma.stockMovement.groupBy({ by: ["productId"], where: { companyId, productId: { in: products.map((product) => product.id) } }, _sum: { quantity: true } });
+  return products.map((product) => ({ ...product, currentStock: totals.find((total) => total.productId === product.id)?._sum.quantity ?? 0 }));
 }
 
 export async function getStockMovements(access: CompanyAccess) {

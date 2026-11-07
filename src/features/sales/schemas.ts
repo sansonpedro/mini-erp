@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const saleItemSchema = z.object({
   productId: z.string().cuid("Select a valid product."),
-  quantity: z.coerce.number().int("Quantity must be a whole number.").positive("Quantity must be greater than zero."),
+  quantity: z.coerce.number().int("Quantity must be a whole number.").positive("Quantity must be greater than zero.").max(2_147_483_647, "Quantity is too high."),
 });
 
 export const saleSchema = z.object({
